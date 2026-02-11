@@ -1,0 +1,54 @@
+# Python
+
+# Byte-compiled / optimized / "lazy" python files (from .pyc)
+__pycache__/
+*.pyc
+*.pyd
+*.pyo
+*.egg-info/
+.eggs/
+
+# Environments
+.venv/
+venv/
+ENV/
+env/
+
+# For conda users
+.conda/
+
+# Versions (added for completeness, generally handled by version managers)
+.python-version
+
+# Distribution / Packaging
+.coverage
+.tox/
+build/
+dist/
+wheels/
+share/man/
+share/doc/
+lib/
+include/
+bin/
+
+# VCS Match Files
+.hgignore
+.lgtm.yml
+
+# Miscellaneous
+.idea/ # for PyCharm
+.vscode/ # for VSCode (if you choose to ignore workspace settings)
+.mypy_cache/
+.pytest_cache/
+.dmypy.json
+celerybeat.pid
+pip-log.txt
+pip-delete-this-line.txt
+htmlcov/
+.nox/
+.pytype/
+cover/
+profiles/
+instance/
+.python-version
