@@ -1,0 +1,9 @@
+numpy
+trimesh
+scipy
+rtree
+networkx
+pytest
+pyglet
+manifold3d
+pyVHACD
