@@ -43,7 +43,15 @@ python -m unittest discover -s tests -p "test_*.py" -v
 ```
 
 # def [Baseline Convexhull Difference](https://github.com/paragpathak2006/test_water/blob/70a48b07d9a5fc6b532d9cb7aefcd16c1bcaa15e/src/Baseline_convexhull_difference_algo/baseline_convexhull_difference_algo.py#L12) (solid) → fluid:
-This is the main baseline wrapper function that handles the full operation. A Input STL file is directly converted to output STL fluid volumes and boundaries by this function. Three operations happen internally. 
+This is the main baseline wrapper function that handles the full operation.
+
+```
+Fluid volume extraction : (CH(solid) - solid) → fluid
+Fluid wall extraction : fluid ∩ solid → wall
+Fluid inlet-outlet extraction : fluid - solid → inlets-outlets
+```
+
+A Input STL file is directly converted to output STL fluid volumes and boundaries by this function. Three operations happen internally. 
 1. convex hull difference,
 2. mesh surface intersection
 3. mesh surface difference.
@@ -86,11 +94,20 @@ graph LR;
     style D fill:#111111,stroke:#333,stroke-width:4px
 ```
 
-### def [convex hull difference](https://github.com/paragpathak2006/test_water/blob/70a48b07d9a5fc6b532d9cb7aefcd16c1bcaa15e/src/Baseline_convexhull_difference_algo/Convexhull_operations/self_difference.py)(solid) →Fluid cavities
+### def [convex hull difference](https://github.com/paragpathak2006/test_water/blob/70a48b07d9a5fc6b532d9cb7aefcd16c1bcaa15e/src/Baseline_convexhull_difference_algo/Convexhull_operations/self_difference.py)(solid) → Fluid cavities : 
 This function takes a self-difference of the mesh with its own convex hull, and outputs an array of fluid cavity regions. 
+```
+Convex Hull (A) - A → B 
+```
 
-### def [mesh surface intersection]( https://github.com/paragpathak2006/test_water/blob/70a48b07d9a5fc6b532d9cb7aefcd16c1bcaa15e/src/Baseline_convexhull_difference_algo/Mesh_operations/intersection_difference.py)(Mesh A, Mesh B) Mesh surfaces: A ∩ B → C
+### def [mesh surface intersection](https://github.com/paragpathak2006/test_water/blob/70a48b07d9a5fc6b532d9cb7aefcd16c1bcaa15e/src/Baseline_convexhull_difference_algo/Mesh_operations/intersection_difference.py)(Mesh A, Mesh B)
 This function is responsible for finding the intersection between two mesh surfaces, A and B. Output mesh C is a surface mesh that is the intersection between the two given meshes.
+```
+Mesh surfaces: A ∩ B → C
+```
 
-### def [mesh surface difference]( https://github.com/paragpathak2006/test_water/blob/70a48b07d9a5fc6b532d9cb7aefcd16c1bcaa15e/src/Baseline_convexhull_difference_algo/Mesh_operations/intersection_difference.py)( Mesh A, Mesh B) Mesh surfaces: A - B → D 
+### def [mesh surface difference]( https://github.com/paragpathak2006/test_water/blob/70a48b07d9a5fc6b532d9cb7aefcd16c1bcaa15e/src/Baseline_convexhull_difference_algo/Mesh_operations/intersection_difference.py)(Mesh A, Mesh B) 
 This function is responsible for finding the difference between two mesh surfaces, A and B. Output mesh D is a surface mesh that is the difference between the two given meshes.
+```
+Mesh surfaces: A - B → D
+```

@@ -3,7 +3,7 @@ from trimesh import Trimesh
 
 def convex_hull_difference(mesh : Trimesh):
 
-    # Compute convex hull of the entire mesh
+    # Compute convex hull of the entire mesh 
     convex_hull = mesh.convex_hull
 
     # Subtract original mesh from convex hull
@@ -11,15 +11,15 @@ def convex_hull_difference(mesh : Trimesh):
     concave_regions = convex_hull.difference(mesh)
 
     if concave_regions is None:
-        print("No concavity — mesh already convex")
+        print("❌ Either mesh is already convex or convex hull difference failed. Therefore no concave regions extracted. ")
         return None
 
     elif isinstance(concave_regions, Trimesh):
-        print("Single concave region")
+        print("✅ Single concave region found")
         return [concave_regions]
 
     elif isinstance(concave_regions, trimesh.Scene):
-        print("Multiple concave regions:", len(concave_regions.geometry))
+        print("✅ Multiple concave regions found :", len(concave_regions.geometry))
         return list(concave_regions.geometry.values())
 
     return concave_regions

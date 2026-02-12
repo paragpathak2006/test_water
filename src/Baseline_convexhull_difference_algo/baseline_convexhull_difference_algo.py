@@ -18,15 +18,19 @@ def baseline_convexhull_difference(solid_volume : Trimesh):
             print("❌Input solid volume mesh could not be healed to a valid mesh. Aborting convex hull difference algorithm.❌")
             return None 
         else:
-            print("✅Input solid volume mesh has been successfully healed to a valid mesh. Proceeding with convex hull difference algorithm.✅")    
+            print("✅ Input solid volume mesh has been successfully healed to a valid mesh. Proceeding with convex hull difference algorithm.✅")    
     
 
     print("\nRunning baseline convex hull difference algorithm...\n")
     PerfLog.start("Baseline Convex hull difference")
     fluid_volumes =  convex_hull_difference(solid_volume)
     PerfLog.stop("Baseline Convex hull difference")
+
+    if fluid_volumes is None:
+        print("❌Convex hull difference algorithm failed or Solid is already convex. No fluid volumes extracted.❌")
+        return None
     
-    print("\nNumber of fluid volumes : ", len(fluid_volumes))
+    print("\n✅ Number of fluid volumes : ", len(fluid_volumes))
     for i, fluid_volume in enumerate(fluid_volumes):
         fluid_volume.export(OUT_DIR / f"1. fluid-volume-{i}.stl")
 
@@ -63,6 +67,18 @@ def baseline_convexhull_difference(solid_volume : Trimesh):
     print("For volume#", i, " : Number of fluid inlet and outlet boundaries : ", len(fluid_inlets_outlets))
     for ii, fluid_inlet_outlet in enumerate(fluid_inlets_outlets):
         fluid_inlet_outlet.export(OUT_DIR / f"4. fluid-inlet-outlet-{i}-{ii}.stl")
+
+    # Validation check for output fluid volume mesh
+    if not baseline_validation_check(fluid_volumes[i]):
+        print("❌ Output fluid volume mesh is not valid. Attempting to heal geometry.❌")
+        baseline_heal(fluid_volumes[i])
+        if not baseline_validation_check(fluid_volumes[i]):
+            print("❌ Output fluid volume mesh could not be healed to a valid mesh. Aborting convex hull difference algorithm.❌")
+            return None
+        else:
+            print("✅ Output fluid volume mesh has been successfully healed to a valid mesh. Proceeding with convex hull difference algorithm.✅")
+    else:
+        print("✅ Output fluid volume mesh is valid and represents a fluid volume. No healing needed.")
 
     return {"fluid_volumes": fluid_volumes, "fluid_walls": fluid_walls, "all_fluid_inlets_outlets": all_fluid_inlets_outlets}
     

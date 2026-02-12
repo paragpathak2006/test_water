@@ -62,6 +62,18 @@ def kdtree_convexhull_difference(solid_volume : Trimesh):
     for ii, fluid_inlet_outlet in enumerate(fluid_inlets_outlets):
         fluid_inlet_outlet.export(OUT_DIR / f"4. fluid-inlet-outlet-{i}-{ii}.stl")
 
+    # Validation check for output fluid volume mesh
+    if not baseline_validation_check(fluid_volumes[i]):
+        print("❌ Output fluid volume mesh is not valid. Attempting to heal geometry.❌")
+        baseline_heal(fluid_volumes[i])
+        if not baseline_validation_check(fluid_volumes[i]):
+            print("❌ Output fluid volume mesh could not be healed to a valid mesh. Aborting convex hull difference algorithm.❌")
+            return None
+        else:
+            print("✅ Output fluid volume mesh has been successfully healed to a valid mesh. Proceeding with convex hull difference algorithm.✅")
+    else:
+        print("✅ Output fluid volume mesh is valid and represents a fluid volume. No healing needed.")
+
     return {"fluid_volumes": fluid_volumes, "fluid_walls": fluid_walls, "all_fluid_inlets_outlets": all_fluid_inlets_outlets}
     
     # # Load the original mesh
