@@ -6,4 +6,3 @@ networkx
 pytest
 pyglet
 manifold3d
-pyVHACD
