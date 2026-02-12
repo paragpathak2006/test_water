@@ -1,4 +1,3 @@
-import trimesh
 from trimesh import Trimesh
 from .Convexhull_operations.self_difference import convex_hull_difference
 from .Mesh_operations.intersection_difference import mesh_faces_intersection_difference

@@ -1,6 +1,5 @@
 import os
 from pathlib import Path
-from time import time
 import numpy as np
 import unittest
 
@@ -19,7 +18,6 @@ from src.KDtree_convexhull_difference_algo.io_path import OUT_DIR as kdtree_OUT_
 
 
 class Run_Unit_Tests(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
 
@@ -42,7 +40,6 @@ class Run_Unit_Tests(unittest.TestCase):
     def pre_cleanup_output_dir(cls):
         print("\nPre-cleaning up the output directory...\n")
         for file in cls.files:
-
             if file.startswith("0."):
                 continue
 
@@ -91,11 +88,11 @@ class Run_Unit_Tests(unittest.TestCase):
         self.assertLessEqual(
             total_time,
             self.maxTimeAllowed,
-            f"❌ Performance test failed: Time taken {total_time*1e3:.1f}ms exceeds allowed limit of {self.maxTimeAllowed*1e3:.0f}ms",
+            f"❌ Performance test failed: Time taken {total_time * 1e3:.1f}ms exceeds allowed limit of {self.maxTimeAllowed * 1e3:.0f}ms",
         )
 
         print(
-            f"\n✅ Performance test passed: Total time taken: {total_time*1e3:.1f}ms is within the allowed limit of {self.maxTimeAllowed*1e3:.0f}ms\n"
+            f"\n✅ Performance test passed: Total time taken: {total_time * 1e3:.1f}ms is within the allowed limit of {self.maxTimeAllowed * 1e3:.0f}ms\n"
         )
 
         print("✅ Performance Test is OK\n\n")
@@ -136,11 +133,11 @@ class Run_Unit_Tests(unittest.TestCase):
         self.assertLessEqual(
             total_time,
             self.maxTimeAllowed,
-            f"❌ Performance test failed: Time taken {total_time*1e3:.1f}ms exceeds allowed limit of {self.maxTimeAllowed*1e3:.0f}ms",
+            f"❌ Performance test failed: Time taken {total_time * 1e3:.1f}ms exceeds allowed limit of {self.maxTimeAllowed * 1e3:.0f}ms",
         )
 
         print(
-            f"\n✅ Performance test passed: Total time taken: {total_time*1e3:.1f}ms is within the allowed limit of {self.maxTimeAllowed*1e3:.0f}ms\n"
+            f"\n✅ Performance test passed: Total time taken: {total_time * 1e3:.1f}ms is within the allowed limit of {self.maxTimeAllowed * 1e3:.0f}ms\n"
         )
 
         print("✅ Performance Test is OK\n\n")

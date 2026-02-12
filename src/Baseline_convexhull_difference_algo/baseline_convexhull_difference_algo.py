@@ -1,8 +1,5 @@
-import trimesh
 from trimesh import Trimesh
 from .Convexhull_operations.self_difference import convex_hull_difference
-from .Mesh_operations.intersection import mesh_faces_intersection
-from .Mesh_operations.difference import mesh_faces_difference
 from .Mesh_operations.intersection_difference import mesh_faces_intersection_difference
 from .io_path import OUT_DIR
 from ..Performance.perfLog import PerfLog

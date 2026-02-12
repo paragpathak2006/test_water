@@ -1,5 +1,4 @@
 import trimesh
-from ..Performance.perfLog import PerfLog
 from .baseline_convexhull_difference_algo import baseline_convexhull_difference
 from .io_path import OUT_DIR
 

@@ -17,4 +17,4 @@ class PerfLog:
     def report():
         print("-- Event Times --")
         for name, time_ in PerfLog._events.items():
-            print(f"{name:20}  Δt = {time_*1e3:8.4f}ms")
+            print(f"{name:20}  Δt = {time_ * 1e3:8.4f}ms")
