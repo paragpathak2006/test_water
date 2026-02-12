@@ -9,7 +9,7 @@ from src.KDtree_convexhull_difference_algo.test_kdtree_algo import test_kdtree_c
 from src.Baseline_convexhull_difference_algo.test_baseline_algo import test_baseline_convexhull_difference
 from src.Performance.perfLog import PerfLog
 
-from io_path import OUT_DIR as benchmark_OUT_DIR
+from tests.io_path import OUT_DIR as benchmark_OUT_DIR
 from src.Baseline_convexhull_difference_algo.io_path import OUT_DIR as baseline_OUT_DIR
 from src.KDtree_convexhull_difference_algo.io_path import OUT_DIR as kdtree_OUT_DIR
 

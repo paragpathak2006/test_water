@@ -1,6 +1,6 @@
 # Load the original mesh
 import trimesh
-from io_path import OUT_DIR
+from tests.io_path import OUT_DIR
 from baseline_validation import baseline_validation_check
 
 solid_volume = trimesh.load(OUT_DIR / "solid-volume.stl")
