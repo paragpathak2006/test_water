@@ -1,15 +1,13 @@
 import trimesh
 from trimesh import Trimesh
 from .Convexhull_operations.self_difference import convex_hull_difference
-from .Mesh_operations.intersection import mesh_faces_intersection
-from .Mesh_operations.difference import mesh_faces_difference
 from .Mesh_operations.intersection_difference import mesh_faces_intersection_difference
 from .io_path import OUT_DIR
 from ..Performance.perfLog import PerfLog
 from ..Geometry.validation.baseline_validation import baseline_validation_check
 from ..Geometry.healing.baseline_healing import baseline_heal
 
-def baseline_convexhull_difference(solid_volume : Trimesh):
+def kdtree_convexhull_difference(solid_volume : Trimesh):
 
     if not baseline_validation_check(solid_volume):
         print("❌Input solid volume mesh is not valid. Attempting to heal geometry.❌")
@@ -21,10 +19,10 @@ def baseline_convexhull_difference(solid_volume : Trimesh):
             print("✅Input solid volume mesh has been successfully healed to a valid mesh. Proceeding with convex hull difference algorithm.✅")    
     
 
-    print("\nRunning baseline convex hull difference algorithm...\n")
-    PerfLog.start("Baseline Convex hull difference")
+    print("\nRunning kdtree convex hull difference algorithm...\n")
+    PerfLog.start("KDtree Convex hull difference")
     fluid_volumes =  convex_hull_difference(solid_volume)
-    PerfLog.stop("Baseline Convex hull difference")
+    PerfLog.stop("KDtree Convex hull difference")
     
     print("\nNumber of fluid volumes : ", len(fluid_volumes))
     for i, fluid_volume in enumerate(fluid_volumes):
@@ -47,9 +45,9 @@ def baseline_convexhull_difference(solid_volume : Trimesh):
     print("\nExtracting fluid wall and inlet-outlet boundaries...\n")
 
     # extract fluid wall and inlet-outlet boundaries using intersection-difference method
-    PerfLog.start("Baseline mesh faces (∩,Δ) - vol#" + str(i))
+    PerfLog.start("KDtree mesh faces (∩,Δ) - vol#" + str(i))
     fluid_boundary = mesh_faces_intersection_difference(fluid_volumes[i], solid_volume)
-    PerfLog.stop("Baseline mesh faces (∩,Δ) - vol#" + str(i))
+    PerfLog.stop("KDtree mesh faces (∩,Δ) - vol#" + str(i))
 
     fluid_wall           = fluid_boundary["intersection"]
     fluid_inlets_outlets = fluid_boundary["difference"].split(only_watertight=False)
