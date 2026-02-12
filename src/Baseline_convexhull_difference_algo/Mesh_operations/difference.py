@@ -3,7 +3,9 @@ from trimesh import Trimesh
 import numpy as np
 
 """ Mesh faces : A - B = C """
-def mesh_faces_difference(mesh_A : Trimesh, mesh_B : Trimesh, tol=1e-5):
+
+
+def mesh_faces_difference(mesh_A: Trimesh, mesh_B: Trimesh, tol=1e-5):
 
     # Compute proximity query for mesh_B
     prox = trimesh.proximity.ProximityQuery(mesh_B)
@@ -19,7 +21,6 @@ def mesh_faces_difference(mesh_A : Trimesh, mesh_B : Trimesh, tol=1e-5):
         if dist < tol:
             common_faces.append(i)
 
-
     # remove common faces from A to get difference mesh C
     range_of_faces = range(len(mesh_A.faces))
     keep_faces = np.setdiff1d(range_of_faces, common_faces)
@@ -29,8 +30,11 @@ def mesh_faces_difference(mesh_A : Trimesh, mesh_B : Trimesh, tol=1e-5):
 
     return mesh_C
 
+
 """ Mesh faces : A - B = C """
-def mesh_faces_difference_kdtree(mesh_A : Trimesh, mesh_B : Trimesh, tol=1e-5):
+
+
+def mesh_faces_difference_kdtree(mesh_A: Trimesh, mesh_B: Trimesh, tol=1e-5):
 
     centA = mesh_A.triangles_center
     centB = mesh_B.triangles_center
@@ -40,7 +44,7 @@ def mesh_faces_difference_kdtree(mesh_A : Trimesh, mesh_B : Trimesh, tol=1e-5):
 
     tree = trimesh.kdtree.KDTree(centB)
 
-    tol_dot  = 1e-4
+    tol_dot = 1e-4
 
     common_faces = []
 
@@ -58,13 +62,17 @@ def mesh_faces_difference_kdtree(mesh_A : Trimesh, mesh_B : Trimesh, tol=1e-5):
 
     return mesh_C
 
-""" Mesh faces : A - B = C """
-def mesh_faces_difference_boolean(mesh_A : Trimesh, mesh_B : Trimesh, tol=1e-5):
 
-    # Boolean difference mesh = A - B 
+""" Mesh faces : A - B = C """
+
+
+def mesh_faces_difference_boolean(mesh_A: Trimesh, mesh_B: Trimesh, tol=1e-5):
+
+    # Boolean difference mesh = A - B
     mesh_C = trimesh.boolean.difference([mesh_A, mesh_B])
-    
+
     return mesh_C
+
 
 # def face_key(verts, tol=1e-6):
 #     v = np.round(verts / tol) * tol
@@ -94,32 +102,32 @@ def mesh_faces_difference_boolean(mesh_A : Trimesh, mesh_B : Trimesh, tol=1e-5):
 # concave_wall = trimesh.load(OUT_DIR / "concave_wall.stl")
 # get_flow_boundary(concave_region, concave_wall)
 
-  # proxB = trimesh.proximity.ProximityQuery(concave_wall)
+# proxB = trimesh.proximity.ProximityQuery(concave_wall)
 
-    # common_faces = []
+# common_faces = []
 
-    # # tol = 1e-5
+# # tol = 1e-5
 
-    # for i, tri in enumerate(concave_region.triangles):
-    #     center = tri.mean(axis=0)
-    #     dist = abs(proxB.signed_distance([center])[0])
+# for i, tri in enumerate(concave_region.triangles):
+#     center = tri.mean(axis=0)
+#     dist = abs(proxB.signed_distance([center])[0])
 
-    #     if dist < tol:
-    #         common_faces.append(i)
+#     if dist < tol:
+#         common_faces.append(i)
 
-    # concave_boundary = concave_region.submesh([common_faces], append=True)
-    # concave_boundary.export(OUT_DIR / "3. common_surface.stl")
+# concave_boundary = concave_region.submesh([common_faces], append=True)
+# concave_boundary.export(OUT_DIR / "3. common_surface.stl")
 
-    # pieces = subtract_surface(B, common_surface)
+# pieces = subtract_surface(B, common_surface)
 
-        # prox = trimesh.proximity.ProximityQuery(concave_wall)
+# prox = trimesh.proximity.ProximityQuery(concave_wall)
 
-    # common_faces_to_remove = []
-    # for i, tri in enumerate(concave_region.triangles):
-    #     dist = abs(prox.signed_distance([tri.mean(axis=0)])[0])
-    #     if dist < tol:
-    #         common_faces_to_remove.append(i)
+# common_faces_to_remove = []
+# for i, tri in enumerate(concave_region.triangles):
+#     dist = abs(prox.signed_distance([tri.mean(axis=0)])[0])
+#     if dist < tol:
+#         common_faces_to_remove.append(i)
 
-    # flow_inlet_outlet = concave_region.submesh([np.setdiff1d(range(len(concave_region.faces)), common_faces_to_remove)], append=True)
+# flow_inlet_outlet = concave_region.submesh([np.setdiff1d(range(len(concave_region.faces)), common_faces_to_remove)], append=True)
 
-    # flow_inlet_outlet = concave_region.difference(concave_wall, engine='scad')
+# flow_inlet_outlet = concave_region.difference(concave_wall, engine='scad')

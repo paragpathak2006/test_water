@@ -1,9 +1,10 @@
 import trimesh
 from trimesh import Trimesh
 
-def convex_hull_difference(mesh : Trimesh):
 
-    # Compute convex hull of the entire mesh 
+def convex_hull_difference(mesh: Trimesh):
+
+    # Compute convex hull of the entire mesh
     convex_hull = mesh.convex_hull
 
     # Subtract original mesh from convex hull
@@ -11,7 +12,9 @@ def convex_hull_difference(mesh : Trimesh):
     concave_regions = convex_hull.difference(mesh)
 
     if concave_regions is None:
-        print("❌ Either mesh is already convex or convex hull difference failed. Therefore no concave regions extracted. ")
+        print(
+            "❌ Either mesh is already convex or convex hull difference failed. Therefore no concave regions extracted. "
+        )
         return None
 
     elif isinstance(concave_regions, Trimesh):
@@ -24,6 +27,7 @@ def convex_hull_difference(mesh : Trimesh):
 
     return concave_regions
     # concave_regions.export("concave_regions.stl")
+
 
 # Load your original mesh
 # mesh = trimesh.load("input.stl")

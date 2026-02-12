@@ -1,0 +1,110 @@
+# Fluid volume extraction
+Given a solid fluid volume, the task is to extract a fluid volume and surfaces from the solid.
+
+## Approach
+I chose the convex hull difference algorithm, as we are dealing with internal fluid cavities, and the given solid part was in STL format. It is also more exact as compared to other volumetric voxel-based methods and works for many cases of fluid channel extraction. Many library functions are readily available for handling the algorithm 
+
+![alt text](image.png)
+## Algorithm Selection
+High-level strategy for extraction using the convex hull difference algorithm involves three operations in the following order. 
+1. convex hull difference,
+2. mesh surface intersection
+3. mesh surface difference.
+
+The following notations are used
+```
+S(🟧)→solid volume
+F(🟦)→fluid volume
+IO(🟦)→fluid inlets and outlets
+```
+1. Fluid volume extraction via self-difference by convex hull : 
+```
+Convex Hull[S(🟧)] - S(🟧) → F(🟦)<sub>0</sub>, F(🟦)<sub>1</sub>...
+```
+2. Select the largest volume 
+3. Fluid wall extraction via intersection : 
+```
+F(🟦) ∩ S(🟧) → Wall(🟦)
+```
+4. Fluid inlet-outlet extraction via differences and splitting:
+```
+F(🟦) - S(🟧) → IO(🟦)
+```
+5. Split each IO set to get the inlets and outlets as separate
+```
+IO(🟦) → IO(🟦)<sub>0</sub>, IO(🟦)<sub>1</sub>...
+```
+6. To validate a fluid channel for the volume, ensure that the number of inlets and outlets are greater than or equal to two.
+```
+IO(🟦)s >= 2
+```
+
+## Implementation Details
+Key design decisions, data structures used
+
+### Fluid volume extraction
+Trimesh library was used for convexhull extraction and volumetric Booleans. 
+### Fluid boundary extraction
+Two different implementations for extracting boundary surfaces were compared in terms of performance
+1. Proximity query: Performance 200ms
+2. Kdtree query: Performance 10ms
+After extracting common faces, they were returned as lists. The uncommon faces were derived using Python’s numpy array difference function.
+
+## Complexity Analysis
+Time and space complexity
+
+## Edge Cases
+: How you handle degenerate cases
+
+## Testing Strategy
+The Python unit tests module was used to ensure correctness, and performance continuously being tested against benchmark results. 
+
+### Correctness
+Different algorithmic approaches were also compared to a baseline approach to ensure that performance and correctness don't degrade as the product gets upgraded with newer feature additions. The baseline folder stays stable ensuing a common reference point exists for any further addition of input parts.
+
+### Performance
+The performance test revealed that the kdtree algorithm approach was found to be 10x faster than the baseline proximity approach. 
+
+### Github workflows for CI/CD
+GitHub workflows were enabled for CI/CD to ensure performance, correctness, linting and formatting stay optimal throughout the product development cycle.
+
+## Challenges
+-	Deciding the libraries needed for convex hull differences was challenging, as different libraries had different implementations of the convex hull algorithms. 
+-	The mesh surface operations like intersection and difference couldn't directly be performed on the Trimesh meshes, as the default implementations are made for water-tight volumes. So a custom implementation had to be designed for those specific operations. 
+-	Implementing the unit testing infrastructure was also challenging, as performance for different variants had to be measured and tabulated, and a performance report needed to be generated. 
+
+## Assumptions
+- The assumptions were made that the ambient is of no interest to the final solution and will have a negligible impact on the region of interest. Also, excluding the ambient will enhance the performance of the CFD calculation. Therefore, this region hasn’t been included in the final fluid region output. 
+- Geometry also needs to have a single largest fluid volume with at least two openings for detecting a channel.
+
+## Validation
+How do you ensure output geometries are watertight and mesh-ready
+
+Techniques used (if any) and their limitations
+
+Input and output geometry are validated using checks post-operation to verify water-tight geometry and ensure positive volume and consistent normals.
+
+The Trimesh property is_volume() was used that initiates a check consisting of the following four properties
+1.  watertightness
+2.  winding consistently
+3.  Finiteness.
+4.  Positive volume
+Both inputs and outputs were validated using this check.
+
+## Geometry Healing
+If the geometry validation check failed, geometry healing was attempted on both the inputs and outputs.
+## Trade-offs
+- The Trimesh libraries were used to quickly create a baseline case for validation and saved development time. This, however, caused different mesh operations to be topologically and geometrically separate from each other, sacrificing performance. 
+- The approach was more focused on performance measurement for different variants of an algorithm, rather than optimization and in-depth analysis of the performance and accuracy issues of different geometric queries. 
+- The topological and geometric optimization that was performed was the merging of an intersection and difference query into a single operation, and ensured that both were using the same geometry and topology while performing the operation.
+
+## Future Improvements
+1. Currently, queries are using the geometry of the trimesh, and the inputs and outputs of different steps are topologically delinked. Bringing these different operations under a common topology will convert the intersection and difference operations into topological operations instead of geometric ones. 
+2. Implementing custom C++ algorithms, building efficient spatial indexing using HashMap 
+3. Converting the algorithms into SIMD algorithms can help utilize parallel architectures like CUDA for ultrafast computations.
+
+## Tool Selection
+Justification for libraries/frameworks chosen
+
+
+

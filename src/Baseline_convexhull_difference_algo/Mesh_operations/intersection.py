@@ -3,7 +3,9 @@ from trimesh import Trimesh
 import numpy as np
 
 """ Mesh faces : A ∩ B = C """
-def mesh_faces_intersection(mesh_A : Trimesh, mesh_B : Trimesh, tol=1e-5):
+
+
+def mesh_faces_intersection(mesh_A: Trimesh, mesh_B: Trimesh, tol=1e-5):
 
     # Compute proximity query for mesh_B
     proxB = trimesh.proximity.ProximityQuery(mesh_B)
@@ -26,8 +28,11 @@ def mesh_faces_intersection(mesh_A : Trimesh, mesh_B : Trimesh, tol=1e-5):
 
     return mesh_C
 
+
 """ Mesh faces : A - B = C """
-def mesh_faces_intersection_kdtree(mesh_A : Trimesh, mesh_B : Trimesh, tol=1e-5):
+
+
+def mesh_faces_intersection_kdtree(mesh_A: Trimesh, mesh_B: Trimesh, tol=1e-5):
 
     centA = mesh_A.triangles_center
     centB = mesh_B.triangles_center
@@ -37,7 +42,7 @@ def mesh_faces_intersection_kdtree(mesh_A : Trimesh, mesh_B : Trimesh, tol=1e-5)
 
     tree = trimesh.kdtree.KDTree(centB)
 
-    tol_dot  = 1e-4
+    tol_dot = 1e-4
 
     common_faces = []
 
@@ -46,20 +51,21 @@ def mesh_faces_intersection_kdtree(mesh_A : Trimesh, mesh_B : Trimesh, tol=1e-5)
         for j in candidate_points:
             if abs(np.dot(normA[i], normB[j])) > 1 - tol_dot:
                 common_faces.append(i)
-    
+
     # Make submesh of A with only the faces that are in common with B
     mesh_C = mesh_A.submesh([common_faces], append=True)
-    
+
     return mesh_C
 
 
-
 """ Mesh faces : A - B = C """
-def mesh_faces_intersection_boolean(mesh_A : Trimesh, mesh_B : Trimesh, tol=1e-5):
+
+
+def mesh_faces_intersection_boolean(mesh_A: Trimesh, mesh_B: Trimesh, tol=1e-5):
 
     # Boolean intersection mesh = A ∩ B
     mesh_C = trimesh.boolean.intersection([mesh_A, mesh_B])
-    
+
     return mesh_C
 
 

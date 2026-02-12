@@ -6,3 +6,5 @@ networkx
 pytest
 pyglet
 manifold3d
+ruff
+black
