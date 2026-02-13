@@ -57,7 +57,9 @@ class Run_Unit_Tests(unittest.TestCase):
         print("\n\n 1️⃣ testing baseline convex hull difference algorithm...")
 
         if test_baseline_convexhull_difference() is None:
-            self.fail("❌ Baseline convex hull difference algorithm failed. Aborting test.")
+            self.fail(
+                "❌ Baseline convex hull difference algorithm failed. Aborting test."
+            )
 
         files = [p.name for p in Path(benchmark_OUT_DIR).iterdir() if p.is_file()]
 
@@ -103,7 +105,9 @@ class Run_Unit_Tests(unittest.TestCase):
         print("\n\n  3️⃣  Testing kdtree convex hull difference algorithm...")
 
         if test_kdtree_convexhull_difference() is None:
-            self.fail("❌ KDtree convex hull difference algorithm failed. Aborting test.")
+            self.fail(
+                "❌ KDtree convex hull difference algorithm failed. Aborting test."
+            )
 
         files = [p.name for p in Path(benchmark_OUT_DIR).iterdir() if p.is_file()]
 
