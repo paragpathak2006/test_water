@@ -19,7 +19,7 @@ IO(🟦)→fluid inlets and outlets
 ```
 1. Fluid volume extraction via self-difference by convex hull : 
 ```
-Convex Hull[S(🟧)] - S(🟧) → F(🟦)<sub>0</sub>, F(🟦)<sub>1</sub>...
+Convex Hull[S(🟧)] - S(🟧) → F(🟦)0, F(🟦)1...
 ```
 2. Select the largest volume 
 3. Fluid wall extraction via intersection : 
@@ -32,7 +32,7 @@ F(🟦) - S(🟧) → IO(🟦)
 ```
 5. Split each IO set to get the inlets and outlets as separate
 ```
-IO(🟦) → IO(🟦)<sub>0</sub>, IO(🟦)<sub>1</sub>...
+IO(🟦) → IO(🟦)0, IO(🟦)1...
 ```
 6. To validate a fluid channel for the volume, ensure that the number of inlets and outlets are greater than or equal to two.
 ```
@@ -51,13 +51,33 @@ Two different implementations for extracting boundary surfaces were compared in 
 After extracting common faces, they were returned as lists. The uncommon faces were derived using Python’s numpy array difference function.
 
 ## Complexity Analysis
-Time and space complexity
+### convex_hull
+Calling mesh.convex_hull computes a 3D convex hull of the mesh vertices. Internally, trimesh delegates this to SciPy’s spatial hull implementation (which wraps Qhull). Complexity, therefore, follows standard 3D convex hull algorithms. 
+```
+n  → number of vertices and 
+h  →  number of hull vertices.
+```
+- Time complexity: O(n log h). 
+- Space complexity : O(n + h)
+### Volumetric Boolean difference
+- Time complexity: O(n log n) + O(h log h)
+- Space complexity : O(n + h + s)
+### Mesh surface intersections and difference for meshes A and B
+```
+- n → faces in mesh A
+- m → faces in mesh B
+- vB → vertices in mesh B
+```
+
+![alt text](image-1.png)
 
 ## Edge Cases
-: How you handle degenerate cases
-
+-	Surface meshes will fail the validation tests. 
+-	Thin slices in inputs and differences that are below the tolerance volume would not be handled. 
+-	Input as a convex hull will trigger an immediate test failure and will not be accepted. 
+-	Self-Intersections in Meshes would fail the validation check as well.
 ## Testing Strategy
-The Python unit tests module was used to ensure correctness, and performance continuously being tested against benchmark results. 
+The Python unit tests module was used to ensure correctness, and performance was continuously being tested against benchmark results. 
 
 ### Correctness
 Different algorithmic approaches were also compared to a baseline approach to ensure that performance and correctness don't degrade as the product gets upgraded with newer feature additions. The baseline folder stays stable ensuing a common reference point exists for any further addition of input parts.
@@ -104,7 +124,6 @@ If the geometry validation check failed, geometry healing was attempted on both 
 3. Converting the algorithms into SIMD algorithms can help utilize parallel architectures like CUDA for ultrafast computations.
 
 ## Tool Selection
-Justification for libraries/frameworks chosen
-
-
-
+Libraries/frameworks chosen were 
+-	Trimesh for convex hull and Boolean operations due to its popularity and ease of use.
+-	Scipy for fast KDtree queries.
