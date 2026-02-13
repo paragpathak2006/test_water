@@ -2,7 +2,7 @@
 Given a solid fluid volume, the task is to extract a fluid volume and surfaces from the solid.
 
 ## Approach
-I chose the convex hull difference algorithm, as we are dealing with internal fluid cavities, and the given solid part was in STL format. It is also more exact as compared to other volumetric voxel-based methods and works for many cases of fluid channel extraction. Many library functions are readily available for handling the algorithm 
+The convex hull difference algorithm was chosen, as we are dealing with internal fluid cavities, and the given solid part was in STL format. It is also more exact as compared to other volumetric voxel-based methods and works for many cases of fluid channel extraction. Many library functions are readily available for handling the algorithm 
 
 ![alt text](image.png)
 ## Algorithm Selection
@@ -51,7 +51,7 @@ Two different implementations for extracting boundary surfaces were compared in 
 After extracting common faces, they were returned as lists. The uncommon faces were derived using Python’s numpy array difference function.
 
 ## Complexity Analysis
-### convex_hull
+### Convex hull extraction
 Calling mesh.convex_hull computes a 3D convex hull of the mesh vertices. Internally, trimesh delegates this to SciPy’s spatial hull implementation (which wraps Qhull). Complexity, therefore, follows standard 3D convex hull algorithms. 
 ```
 n  → number of vertices and 
@@ -59,10 +59,13 @@ h  →  number of hull vertices.
 ```
 - Time complexity: O(n log h). 
 - Space complexity : O(n + h)
-### Volumetric Boolean difference
+
+### Volumetric Boolean difference between convex hull and orignal part
 - Time complexity: O(n log n) + O(h log h)
 - Space complexity : O(n + h + s)
-### Mesh surface intersections and difference for meshes A and B
+
+### Mesh surface intersections and difference for two meshes A and B
+Since both operations require similar geometry and topology both these were united into a single operation to save computational time
 ```
 - n → faces in mesh A
 - m → faces in mesh B
@@ -70,6 +73,9 @@ h  →  number of hull vertices.
 ```
 
 ![alt text](image-1.png)
+
+
+
 
 ## Edge Cases
 -	Surface meshes will fail the validation tests. 
@@ -85,6 +91,17 @@ Different algorithmic approaches were also compared to a baseline approach to en
 ### Performance
 The performance test revealed that the kdtree algorithm approach was found to be 10x faster than the baseline proximity approach. 
 
+Event times for the following were tabulated
+Convex hull difference 
+```
+- Baseline : Δt =  37.0425ms
+- KDtree : Δt =   9.3676ms
+```
+Mesh surface intersection & difference
+```
+- Baseline : Δt = 212.4337ms
+- KDtree   : Δt =  13.2600ms
+```
 ### Github workflows for CI/CD
 GitHub workflows were enabled for CI/CD to ensure performance, correctness, linting and formatting stay optimal throughout the product development cycle.
 
