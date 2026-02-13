@@ -40,8 +40,3 @@ def mesh_faces_intersection_boolean(mesh_A: Trimesh, mesh_B: Trimesh, tol=1e-5):
     mesh_C = trimesh.boolean.intersection([mesh_A, mesh_B])
 
     return mesh_C
-
-
-# input = trimesh.load(OUT_DIR / "input.stl")
-# concave_region = trimesh.load(OUT_DIR / "concave_region_0.stl")
-# get_concave_wall(input, concave_region)

@@ -21,22 +21,22 @@ IO(🟦)→fluid inlets and outlets
 ```
 Convex Hull[S(🟧)] - S(🟧) → F(🟦)0, F(🟦)1...
 ```
-2. Select the largest volume 
+2. One by one iterate over the list of concavities F(🟦)i
 3. Fluid wall extraction via intersection : 
 ```
-F(🟦) ∩ S(🟧) → Wall(🟦)
+F(🟦)i ∩ S(🟧) → Wall(🟦)i
 ```
 4. Fluid inlet-outlet extraction via differences and splitting:
 ```
-F(🟦) - S(🟧) → IO(🟦)
+F(🟦)i - S(🟧) → IO(🟦)i
 ```
 5. Split each IO set to get the inlets and outlets as separate
 ```
-IO(🟦) → IO(🟦)0, IO(🟦)1...
+IO(🟦)i → IO(🟦)i,0, IO(🟦)i,1..., IO(🟦)i,Nmax
 ```
-6. To validate a fluid channel for the volume, ensure that the number of inlets and outlets are greater than or equal to two.
+6. To validate the fluid channel for the volume, ensure that the number of inlets and outlets are greater than or equal to two.
 ```
-IO(🟦)s >= 2
+Nmax >= 2
 ```
 
 ## Implementation Details
@@ -103,6 +103,12 @@ Mesh surface intersection & difference
 - Baseline : Δt = 212.4337ms
 - KDtree   : Δt =  13.2600ms
 ```
+
+| Δt(ms) |  Mesh (∩&Δ)(S,F) |CH(S) - S |
+|------:|:-------:|:------:|
+| Baseline | 212.4337ms | 37.0425ms | 
+| KDtree | 13.2600ms |9.3676ms | 
+
 ### Github workflows for CI/CD
 GitHub workflows were enabled for CI/CD to ensure performance, correctness, linting and formatting stay optimal throughout the product development cycle.
 
