@@ -91,7 +91,8 @@ Different algorithmic approaches were also compared to a baseline approach to en
 ### Performance
 The performance test revealed that the kdtree algorithm approach was found to be 10x faster than the baseline proximity approach. 
 
-Event times for the following were tabulated
+Event times for the following algorithms were tabulated
+
 Convex hull difference 
 ```
 - Baseline : Δt =  37.0425ms
