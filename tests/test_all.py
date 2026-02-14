@@ -64,7 +64,7 @@ class Run_Unit_Tests(unittest.TestCase):
         files = [p.name for p in Path(benchmark_OUT_DIR).iterdir() if p.is_file()]
 
         for file in files:
-            print("Comparing file : ", file)
+            print("📁 Comparing file : ", file)
 
             baseline_mesh = trimesh.load(baseline_OUT_DIR / file)
             benchmark_mesh = trimesh.load(benchmark_OUT_DIR / file)
@@ -112,7 +112,7 @@ class Run_Unit_Tests(unittest.TestCase):
         files = [p.name for p in Path(benchmark_OUT_DIR).iterdir() if p.is_file()]
 
         for file in files:
-            print("Comparing file : ", file)
+            print("📁 Comparing file : ", file)
 
             baseline_mesh = trimesh.load(baseline_OUT_DIR / file)
             benchmark_mesh = trimesh.load(benchmark_OUT_DIR / file)

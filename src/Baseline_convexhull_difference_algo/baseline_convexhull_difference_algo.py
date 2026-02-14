@@ -3,24 +3,17 @@ from .Convexhull_operations.self_difference import convex_hull_difference
 from .Mesh_operations.intersection_difference import mesh_faces_intersection_difference
 from .io_path import OUT_DIR
 from ..Performance.perfLog import PerfLog
-from ..Geometry.validation.baseline_validation import baseline_validation_check
-from ..Geometry.healing.baseline_healing import baseline_heal
+from ..Geometry.Processing.pre import preprocess_solid_volume_for_convexhull_difference
+from ..Geometry.Processing.post import (
+    postprocess_fluid_volume_for_convexhull_difference,
+)
+from ..Geometry.Processing.export import export_fluid_volumes_and_boundaries
 
 
 def baseline_convexhull_difference(solid_volume: Trimesh):
 
-    if not baseline_validation_check(solid_volume):
-        print("❌Input solid volume mesh is not valid. Attempting to heal geometry.❌")
-        baseline_heal(solid_volume)
-        if not baseline_validation_check(solid_volume):
-            print(
-                "❌Input solid volume mesh could not be healed to a valid mesh. Aborting convex hull difference algorithm.❌"
-            )
-            return None
-        else:
-            print(
-                "✅ Input solid volume mesh has been successfully healed to a valid mesh. Proceeding with convex hull difference algorithm.✅"
-            )
+    if preprocess_solid_volume_for_convexhull_difference(solid_volume) is None:
+        return None
 
     print("\nRunning baseline convex hull difference algorithm...\n")
     PerfLog.start("Baseline Convex hull difference")
@@ -42,6 +35,7 @@ def baseline_convexhull_difference(solid_volume: Trimesh):
     fluid_inlets_outlets_all = (
         []
     )  # result list to store lists of inlet-outlet boundary meshes for each fluid volume
+
     for i, fluid_volume in enumerate(fluid_volumes):
         print("\nExtracting fluid walls and inlet-outlet boundaries...")
 
@@ -73,30 +67,16 @@ def baseline_convexhull_difference(solid_volume: Trimesh):
 
         if len(fluid_inlets_outlets) >= 2:
             print(
-                "\n✅ Multiple fluid inlets-outlets detected. Fluid volume represents a valid embedded path."
+                "\n✅ Multiple fluid inlets-outlets detected.",
+                "Fluid volume represents a valid embedded path.",
             )
 
             # Validation check for output fluid volume mesh
-            if not baseline_validation_check(fluid_volumes[i]):
-                print(
-                    "❌ Output fluid volume mesh is not valid. Attempting to heal geometry.❌"
-                )
-                baseline_heal(fluid_volumes[i])
-                if not baseline_validation_check(fluid_volumes[i]):
-                    print(
-                        "❌ Output fluid volume mesh could not be healed to a valid mesh. Aborting convex hull difference algorithm.❌"
-                    )
-                    return None
-                else:
-                    print(
-                        "✅ Output fluid volume mesh has been successfully healed to a valid mesh. Proceeding with convex hull difference algorithm.✅"
-                    )
-            else:
-                print(
-                    "✅ Output fluid volume mesh is valid and represents a fluid volume. No healing needed."
-                )
+            if postprocess_fluid_volume_for_convexhull_difference(fluid_volume) is None:
+                return None
 
             export_fluid_volumes_and_boundaries(
+                OUT_DIR,
                 i,
                 fluid_volume,
                 fluid_wall,
@@ -117,25 +97,3 @@ def baseline_convexhull_difference(solid_volume: Trimesh):
         "fluid_walls": fluid_walls,
         "all_fluid_inlets_outlets": fluid_inlets_outlets_all,
     }
-
-
-def export_fluid_volumes_and_boundaries(
-    i, fluid_volume, fluid_wall, fluid_inlets_outlets_combined, fluid_inlets_outlets
-):
-
-    print(f"\n✅ Exporting file : fluid-volume-{i} ...")
-
-    fluid_volume.export(OUT_DIR / f"1. fluid-volume-{i}.stl")
-
-    # export each inlet-outlet boundary separately
-    print(f"✅ Exporting file : fluid-wall-{i} ...")
-    fluid_wall.export(OUT_DIR / f"2. fluid_wall-{i}.stl")
-
-    print(f"✅ Exporting file : fluid-inlets-outlets-combined-{i} ...")
-    fluid_inlets_outlets_combined.export(
-        OUT_DIR / f"3. fluid_inlets-outlets-combined-{i}.stl"
-    )
-
-    for ii, fluid_inlet_outlet in enumerate(fluid_inlets_outlets):
-        print(f"✅ Exporting file : fluid-inlet-outlet-{i}-{ii} ...")
-        fluid_inlet_outlet.export(OUT_DIR / f"4. fluid-inlet-outlet-{i}-{ii}.stl")
