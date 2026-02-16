@@ -19,24 +19,24 @@ IO(🟦)→fluid inlets and outlets
 ```
 1. Fluid volume extraction via self-difference by convex hull : 
 ```
-Convex Hull[S(🟧)] - S(🟧) → F(🟦)0, F(🟦)1...
+Convex Hull[S(🟧)] - S(🟧) → F(🟦)₀, F(🟦)₁...
 ```
-2. One by one iterate over the list of concavities F(🟦)i
+2. One by one iterate over the list of concavities F(🟦)ᵢ
 3. Fluid wall extraction via intersection : 
 ```
-F(🟦)i ∩ S(🟧) → Wall(🟦)i
+F(🟦)ᵢ ∩ S(🟧) → Wall(🟦)ᵢ
 ```
 4. Fluid inlet-outlet extraction via differences and splitting:
 ```
-F(🟦)i - S(🟧) → IO(🟦)i
+F(🟦)ᵢ - S(🟧) → IO(🟦)ᵢ
 ```
 5. Split each IO set to get the inlets and outlets as separate
 ```
-IO(🟦)i → IO(🟦)i,0, IO(🟦)i,1..., IO(🟦)i,Nmax
+IO(🟦)ᵢ → IO(🟦)ᵢ,₀, IO(🟦)ᵢ,₁..., IO(🟦)ᵢ,ₙ
 ```
 6. To validate the fluid channel for the volume, ensure that the number of inlets and outlets are greater than or equal to two.
 ```
-Nmax >= 2
+n >= 2
 ```
 
 ## Implementation Details
@@ -189,5 +189,6 @@ If the geometry validation check failed, geometry healing was attempted on both 
 Libraries/frameworks chosen were 
 -   Trimesh for convex hull and Boolean operations due to its popularity and ease of use.
 -   Scipy for fast KDtree queries.
+
 
 
