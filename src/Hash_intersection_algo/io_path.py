@@ -4,7 +4,5 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent
 
 # Output directory for the generated STL files
-OUT_DIR = Path(BASE_DIR / "benchmark")
-OUT_DIR_2 = Path(BASE_DIR / "benchmark_2")
+OUT_DIR = Path(BASE_DIR / "test_parts")
 OUT_DIR.mkdir(exist_ok=True)
-OUT_DIR_2.mkdir(exist_ok=True)

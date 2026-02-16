@@ -44,11 +44,34 @@ Key design decisions, data structures used
 
 ### Fluid volume extraction
 Trimesh library was used for convexhull extraction and volumetric Booleans. 
+
 ### Fluid boundary extraction
-Two different implementations for extracting boundary surfaces were compared in terms of performance
-1. Proximity query: Performance 200ms
-2. Kdtree query: Performance 10ms
+Sample performance Report from baseline algorithm is given below
+
+| Δt(ms) |  Δt |
+|:------|:-------|
+| Baseline CHD | ⏰ 18.9536ms | 
+| Baseline mesh (∩,Δ) - vol#0 | ⏰223.4202ms | 
+| Baseline split - vol#0 | ⏰  2.4141ms | 
+
+Since the main performance bottleneck was found to be the mesh intersection  algorithmm Three different implementations were attempted for the extracting boundary surfaces were compared in terms of performance
+
+| Type |  Δt |
+|:------|:-------|
+| 1. Proximity query | ⏰ ~200ms | 
+| 2. Kdtree query | ⏰~15ms | 
+| 3. Hashmap implementation | ⏰  ~2-30ms | 
+
 After extracting common faces, they were returned as lists. The uncommon faces were derived using Python’s numpy array difference function.
+
+#### Proximity query
+Proximity query was found to be quite accurate because it is more generic
+
+#### KDtree query
+KDtree query was a lot faster, but it needs a consistent topology in volumetric Boolean for the query to work with centroids.
+
+#### Hashmaps 
+Spatial indexing using HashMap were also relatively fast but required consistent topology between volumetric Booleans. The result was consistent with the Proximity query and required separate benchmarks. Output is also visibly different from the other two.
 
 ## Complexity Analysis
 ### Convex hull extraction
@@ -74,48 +97,63 @@ Since both operations require similar geometry and topology both these were unit
 
 ![alt text](image-1.png)
 
-
-
-
 ## Edge Cases
--	Surface meshes will fail the validation tests. 
--	Thin slices in inputs and differences that are below the tolerance volume would not be handled. 
--	Input as a convex hull will trigger an immediate test failure and will not be accepted. 
--	Self-Intersections in Meshes would fail the validation check as well.
+-   Surface meshes will fail the validation tests. 
+-   Thin slices in inputs and differences that are below the tolerance volume would not be handled. 
+-   Input as a convex hull will trigger an immediate test failure and will not be accepted. 
+-   Self-Intersections in Meshes would fail the validation check as well.
 ## Testing Strategy
 The Python unit tests module was used to ensure correctness, and performance was continuously being tested against benchmark results. 
 
 ### Correctness
 Different algorithmic approaches were also compared to a baseline approach to ensure that performance and correctness don't degrade as the product gets upgraded with newer feature additions. The baseline folder stays stable ensuing a common reference point exists for any further addition of input parts.
 
+| Algo| Proximity |KDtree | Hash Intersection |
+|:------|:-------:|:-------:|:-------:|
+|📍 CHD           | ✅|✅|✅|
+|📍 mesh (∩,Δ )  |✅|🔧|❌|
+|📍 split  |✅|✅|✅|
+
+#### Proximity correctness
+The Proximity algorithm worked correctly and produced reasonably correct output by observations. 
+#### KDtree correctness
+The KDtree failed for 4 faces and needed a proximity fix. This happened because Booleans didn't preserve face topology for flat surface subtractions. Therefore, the centroids didn't match for those faces. 
+#### HashMap correctness
+The hashmap also failed for the same reasons, with no fix available. The secondary benchmark folder is "benchmark_2", which contains the output parts.
+
 ### Performance
 The performance test revealed that the kdtree algorithm approach was found to be 10x faster than the baseline proximity approach. 
 
 Event times for the following algorithms were tabulated
 
-Convex hull difference 
-```
-- Baseline : Δt =  37.0425ms
-- KDtree : Δt =   9.3676ms
-```
-Mesh surface intersection & difference
-```
-- Baseline : Δt = 212.4337ms
-- KDtree   : Δt =  13.2600ms
-```
+Event Times 
 
-| Δt(ms) |  Mesh (∩&Δ)(S,F) |CH(S) - S |
-|------:|:-------:|:------:|
-| Baseline | 212.4337ms | 37.0425ms | 
-| KDtree | 13.2600ms |9.3676ms | 
+| Baseline Algo          ||
+|:------|:-------|
+| 📍 CHD           |Δt = ⏰ 18.9536ms|
+| 📍 mesh (∩,Δ) - vol#0  |Δt = ⏰223.4202ms|
+| 📍 split - vol#0  |Δt = ⏰  2.4141ms|
+
+| KDtree ||
+|:------|:-------|
+| 📍 CHD            |Δt = ⏰  6.8467ms|
+| 📍 mesh (∩,Δ) - vol#0  |Δt = ⏰ 14.7903ms|
+| 📍 split - vol#0  |Δt = ⏰  1.3825ms|
+
+| Hash Intersection Algo  ||
+|:------|:-------|
+| 📍 CHD  |Δt = ⏰  8.4248ms|
+| 📍 mesh (∩,Δ) - vol#0  |Δt = ⏰ 28.9451ms|
+| 📍 split - vol#0  |Δt = ⏰  1.6844ms|
+
 
 ### Github workflows for CI/CD
 GitHub workflows were enabled for CI/CD to ensure performance, correctness, linting and formatting stay optimal throughout the product development cycle.
 
 ## Challenges
--	Deciding the libraries needed for convex hull differences was challenging, as different libraries had different implementations of the convex hull algorithms. 
--	The mesh surface operations like intersection and difference couldn't directly be performed on the Trimesh meshes, as the default implementations are made for water-tight volumes. So a custom implementation had to be designed for those specific operations. 
--	Implementing the unit testing infrastructure was also challenging, as performance for different variants had to be measured and tabulated, and a performance report needed to be generated. 
+-   Deciding the libraries needed for convex hull differences was challenging, as different libraries had different implementations of the convex hull algorithms. 
+-   The mesh surface operations like intersection and difference couldn't directly be performed on the Trimesh meshes, as the default implementations are made for water-tight volumes. So a custom implementation had to be designed for those specific operations. 
+-   Implementing the unit testing infrastructure was also challenging, as performance for different variants had to be measured and tabulated, and a performance report needed to be generated. 
 
 ## Assumptions
 - The assumptions were made that the ambient is of no interest to the final solution and will have a negligible impact on the region of interest. Also, excluding the ambient will enhance the performance of the CFD calculation. Therefore, this region hasn’t been included in the final fluid region output. 
@@ -149,5 +187,7 @@ If the geometry validation check failed, geometry healing was attempted on both 
 
 ## Tool Selection
 Libraries/frameworks chosen were 
--	Trimesh for convex hull and Boolean operations due to its popularity and ease of use.
--	Scipy for fast KDtree queries.
+-   Trimesh for convex hull and Boolean operations due to its popularity and ease of use.
+-   Scipy for fast KDtree queries.
+
+

@@ -25,8 +25,7 @@ def mesh_faces_intersection_difference(mesh_A: Trimesh, mesh_B: Trimesh, tol=1e-
     print("Intersection mesh extracted with", len(common_faces), " faces")
 
     # remove common faces from A to get difference mesh C
-    range_of_faces = range(len(mesh_A.faces))
-    uncommon_faces = np.setdiff1d(range_of_faces, common_faces)
+    uncommon_faces = np.setdiff1d(range(len(mesh_A.faces)), common_faces)
 
     # Make two submeshes C and D from  A with
     # C: the faces that are in common with B and

@@ -2,7 +2,7 @@ from trimesh import Trimesh
 from .Convexhull_operations.self_difference import convex_hull_difference
 from .Mesh_operations.intersection_difference import mesh_faces_intersection_difference
 from .io_path import OUT_DIR
-from ..Performance.perfLog import PerfLog
+from ..Performance.perfLog import PerfLog, TargetAlgo
 from ..Geometry.Processing.pre import preprocess_solid_volume_for_convexhull_difference
 from ..Geometry.Processing.post import (
     postprocess_fluid_volume_for_convexhull_difference,
@@ -16,9 +16,9 @@ def kdtree_convexhull_difference(solid_volume: Trimesh):
         return None
 
     print("\nRunning kdtree convex hull difference algorithm...\n")
-    PerfLog.start("KDtree Convex hull difference")
-    fluid_volumes = convex_hull_difference(solid_volume)
-    PerfLog.stop("KDtree Convex hull difference")
+    fluid_volumes = PerfLog.log(
+        TargetAlgo.KDTREE.CONVEX_HULL_DIFFERENCE, convex_hull_difference, solid_volume
+    )
 
     if fluid_volumes is None:
         print(
@@ -46,16 +46,19 @@ def kdtree_convexhull_difference(solid_volume: Trimesh):
         print("\nExtracting fluid wall and inlet-outlet boundaries...\n")
 
         # extract fluid wall and inlet-outlet boundaries using intersection-difference method
-        PerfLog.start("KDtree mesh faces (∩,Δ) - vol#" + str(i))
-        fluid_boundary = mesh_faces_intersection_difference(
-            fluid_volumes[i], solid_volume
+        fluid_boundary = PerfLog.log(
+            TargetAlgo.KDTREE.MESH_INTERSECTION_DIFFERENCE(i),
+            mesh_faces_intersection_difference,
+            fluid_volumes[i],
+            solid_volume,
         )
-        PerfLog.stop("KDtree mesh faces (∩,Δ) - vol#" + str(i))
 
         fluid_wall = fluid_boundary["intersection"]
         fluid_inlets_outlets_combined = fluid_boundary["difference"]
-        fluid_inlets_outlets = fluid_inlets_outlets_combined.split(
-            only_watertight=False
+        fluid_inlets_outlets = PerfLog.log(
+            TargetAlgo.KDTREE.SPLIT(i),
+            fluid_inlets_outlets_combined.split,
+            only_watertight=False,
         )
 
         print(
