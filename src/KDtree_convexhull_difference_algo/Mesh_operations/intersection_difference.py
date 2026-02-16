@@ -99,42 +99,41 @@ def mesh_faces_intersection_difference(mesh_A: Trimesh, mesh_B: Trimesh, tol=1e-
 #         for i in diff_kdtree:
 #             print(mesh_A.faces[i])
 
-    #     if iA in [10, 99, 150, 151]:
+#     if iA in [10, 99, 150, 151]:
 
-    #         dist2 = float('inf')
-    #         closest_iB = None
-    #         for iB2, centroidB in enumerate(centB):
-    #             if dist2 > np.linalg.norm(centroid - centroidB):
-    #                 dist2 = np.linalg.norm(centroid - centroidB)
-    #                 closest_iB = iB2
+#         dist2 = float('inf')
+#         closest_iB = None
+#         for iB2, centroidB in enumerate(centB):
+#             if dist2 > np.linalg.norm(centroid - centroidB):
+#                 dist2 = np.linalg.norm(centroid - centroidB)
+#                 closest_iB = iB2
 
-    #         dist, iB = treeB.query(centroid)
-    #         res = treeB.query_ball_point(centroid, tol)
-    #         if dist < tol and abs(np.dot(normA[iA], normB[iB])) > 1 - tol_dot:
-    #             common_faces.append(iA)
+#         dist, iB = treeB.query(centroid)
+#         res = treeB.query_ball_point(centroid, tol)
+#         if dist < tol and abs(np.dot(normA[iA], normB[iB])) > 1 - tol_dot:
+#             common_faces.append(iA)
 
-    #         print(f"iA = {iA}")
-    #         print(f"centroid = {centroid}")
-    #         print(f"normal = {normA[iA]}")
+#         print(f"iA = {iA}")
+#         print(f"centroid = {centroid}")
+#         print(f"normal = {normA[iA]}")
 
-    #         print(f"iB = {iB}")
-    #         print(f"centroid = {centB[iB]}")
-    #         print(f"normal = {normB[iB]}")
+#         print(f"iB = {iB}")
+#         print(f"centroid = {centB[iB]}")
+#         print(f"normal = {normB[iB]}")
 
-    #         print(f"closest_iB = {closest_iB}")
-    #         print(f"centroid = {centB[closest_iB]}")
-    #         print(f"normal = {normB[closest_iB]}")
-    #         print(f"dist2 = {dist2}")
+#         print(f"closest_iB = {closest_iB}")
+#         print(f"centroid = {centB[closest_iB]}")
+#         print(f"normal = {normB[closest_iB]}")
+#         print(f"dist2 = {dist2}")
 
-    #         print(f"dot product = {np.dot(normA[iA], normB[iB])}")
+#         print(f"dot product = {np.dot(normA[iA], normB[iB])}")
 
-    #         print("dist : ", dist)
-    #         print("dist < tol : ", dist < tol)
+#         print("dist : ", dist)
+#         print("dist < tol : ", dist < tol)
 
-    #         print("abs(dot) > 1 - tol_dot : ", abs(np.dot(normA[iA], normB[iB])) > 1 - tol_dot)
-    #         print("abs(dot) : ", abs(np.dot(normA[iA], normB[iB])))
+#         print("abs(dot) > 1 - tol_dot : ", abs(np.dot(normA[iA], normB[iB])) > 1 - tol_dot)
+#         print("abs(dot) : ", abs(np.dot(normA[iA], normB[iB])))
 
-    #         print(f"Verdict : Face {iA} is {'common' if dist < tol and abs(np.dot(normA[iA], normB[iB])) > 1 - tol_dot else 'not common'}")
+#         print(f"Verdict : Face {iA} is {'common' if dist < tol and abs(np.dot(normA[iA], normB[iB])) > 1 - tol_dot else 'not common'}")
 
-    #         print("--------------------------------------------------")
-
+#         print("--------------------------------------------------")

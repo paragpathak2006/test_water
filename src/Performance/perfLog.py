@@ -5,22 +5,28 @@ class TargetAlgo:
 
     class BASELINE:
         CONVEX_HULL_DIFFERENCE = "Baseline CHD"
+
         def MESH_INTERSECTION_DIFFERENCE(i):
             return f"Baseline mesh (∩,Δ) - vol#{i}"
+
         def SPLIT(i):
             return f"Baseline split - vol#{i}"
 
     class KDTREE:
         CONVEX_HULL_DIFFERENCE = "KDtree CHD"
+
         def MESH_INTERSECTION_DIFFERENCE(i):
             return f"KDtree mesh (∩,Δ) - vol#{i}"
+
         def SPLIT(i):
             return f"KDtree split - vol#{i}"
 
     class HASH_INTERSECTION:
         CONVEX_HULL_DIFFERENCE = "Hash Intersection CHD"
+
         def MESH_INTERSECTION_DIFFERENCE(i):
             return f"Hash Intersection mesh (∩,Δ) - vol#{i}"
+
         def SPLIT(i):
             return f"Hash Intersection split - vol#{i}"
 
