@@ -4,12 +4,16 @@ from trimesh import Trimesh
 
 def convex_hull_difference(mesh: Trimesh):
 
+    if mesh.is_convex:
+        print("❌ Mesh is already convex. No concave regions to extract.")
+        return None
+
     # Compute convex hull of the entire mesh
     convex_hull = mesh.convex_hull
 
     # Subtract original mesh from convex hull
     # This gives the concave "gaps"
-    concave_regions = convex_hull.difference(mesh)
+    concave_regions = convex_hull.difference(mesh, engine="manifold")
 
     if concave_regions is None:
         print(

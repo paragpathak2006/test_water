@@ -111,15 +111,17 @@ Different algorithmic approaches were also compared to a baseline approach to en
 | Algo| Proximity |KDtree | Hash Intersection |
 |:------|:-------:|:-------:|:-------:|
 |📍 CHD           | ✅|✅|✅|
-|📍 mesh (∩,Δ )  |✅|🔧|❌|
+|📍 mesh (∩,Δ )  |✅|🔧|🔧|
 |📍 split  |✅|✅|✅|
 
 #### Proximity correctness
-The Proximity algorithm worked correctly and produced reasonably correct output by observations. 
+The Proximity mesh intersection algorithm worked correctly and produced reasonably correct output by observations. 
+
 #### KDtree correctness
-The KDtree failed for 4 faces and needed a proximity fix. This happened because Booleans didn't preserve face topology for flat surface subtractions. Therefore, the centroids didn't match for those faces. 
+The KDtree mesh intersection failed for 4 faces and needed a proximity as an additional check for limited faces. This happened because Booleans didn't preserve face topology for flat surface subtractions. Therefore, the centroids didn't match for those faces. Once fix was added it worked correctly to give valid results.
+
 #### HashMap correctness
-The hashmap also failed for the same reasons, with no fix available. The secondary benchmark folder is "benchmark_2", which contains the output parts.
+The hashmap mesh intersection also failed for the same reasons. When combined with a proximityQuery it worked correctly to give valid results. 
 
 ### Performance
 The performance test revealed that the kdtree algorithm approach was found to be 10x faster than the baseline proximity approach. 

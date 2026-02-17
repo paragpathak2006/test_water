@@ -1,23 +1,35 @@
 from trimesh import Trimesh
-from .Convexhull_operations.self_difference import convex_hull_difference
-from .Mesh_operations.intersection_difference import mesh_faces_intersection_difference
+
+# from  Convexhull_operations.self_difference import convex_hull_difference
+# from .Mesh_operations.intersection_difference import mesh_faces_intersection_difference
+from src.Geometry.Convexhull_operations.convex_hull_difference.baseline import (
+    convex_hull_difference,
+)
+from src.Geometry.Mesh_operations.intersection_difference.Variants.hashing import (
+    mesh_faces_intersection_difference,
+)
+
 from .io_path import OUT_DIR
-from ..Performance.perfLog import PerfLog, TargetAlgo
-from ..Geometry.Processing.pre import preprocess_solid_volume_for_convexhull_difference
-from ..Geometry.Processing.post import (
+from src.Performance.perfLog import PerfLog, TargetAlgo
+from src.Geometry.Processing.pre import (
+    preprocess_solid_volume_for_convexhull_difference,
+)
+from src.Geometry.Processing.post import (
     postprocess_fluid_volume_for_convexhull_difference,
 )
-from ..Geometry.Processing.export import export_fluid_volumes_and_boundaries
+from src.Geometry.Processing.export import export_fluid_volumes_and_boundaries
 
 
-def kdtree_convexhull_difference(solid_volume: Trimesh):
+def convexhull_difference_algo(solid_volume: Trimesh):
 
     if preprocess_solid_volume_for_convexhull_difference(solid_volume) is None:
         return None
 
-    print("\nRunning kdtree convex hull difference algorithm...\n")
+    print("\nRunning hash intersection convex hull difference algorithm...\n")
     fluid_volumes = PerfLog.log(
-        TargetAlgo.KDTREE.CONVEX_HULL_DIFFERENCE, convex_hull_difference, solid_volume
+        TargetAlgo.HASH_INTERSECTION.CONVEX_HULL_DIFFERENCE,
+        convex_hull_difference,
+        solid_volume,
     )
 
     if fluid_volumes is None:
@@ -47,7 +59,7 @@ def kdtree_convexhull_difference(solid_volume: Trimesh):
 
         # extract fluid wall and inlet-outlet boundaries using intersection-difference method
         fluid_boundary = PerfLog.log(
-            TargetAlgo.KDTREE.MESH_INTERSECTION_DIFFERENCE(i),
+            TargetAlgo.HASH_INTERSECTION.MESH_INTERSECTION_DIFFERENCE(i),
             mesh_faces_intersection_difference,
             fluid_volumes[i],
             solid_volume,
@@ -56,7 +68,7 @@ def kdtree_convexhull_difference(solid_volume: Trimesh):
         fluid_wall = fluid_boundary["intersection"]
         fluid_inlets_outlets_combined = fluid_boundary["difference"]
         fluid_inlets_outlets = PerfLog.log(
-            TargetAlgo.KDTREE.SPLIT(i),
+            TargetAlgo.HASH_INTERSECTION.SPLIT(i),
             fluid_inlets_outlets_combined.split,
             only_watertight=False,
         )

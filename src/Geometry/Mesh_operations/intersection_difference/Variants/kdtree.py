@@ -9,9 +9,6 @@ import trimesh
 
 def mesh_faces_intersection_difference(mesh_A: Trimesh, mesh_B: Trimesh, tol=1e-5):
 
-    # Compute proximity query for mesh_B
-    proxB = trimesh.proximity.ProximityQuery(mesh_B)
-
     centA = mesh_A.triangles_center
     centB = mesh_B.triangles_center
 
@@ -29,11 +26,11 @@ def mesh_faces_intersection_difference(mesh_A: Trimesh, mesh_B: Trimesh, tol=1e-
         dist, iB = treeB.query(centroid)
         if dist < tol and abs(np.dot(normA[iA], normB[iB])) > 1 - tol_dot:
             common_faces.append(iA)
-        else:
-            if dist < 1:
-                proxB_dist = abs(proxB.signed_distance([centroid])[0])
-                if proxB_dist < tol:
-                    common_faces.append(iA)
+        # else:
+        #     if dist < 1:
+        #         proxB_dist = abs(proxB.signed_distance([centroid])[0])
+        #         if proxB_dist < tol:
+        #             common_faces.append(iA)
 
     # common(mesh_A, mesh_B, common_faces, tol)
     print("Intersection mesh extracted with", len(common_faces), " faces")
@@ -41,11 +38,41 @@ def mesh_faces_intersection_difference(mesh_A: Trimesh, mesh_B: Trimesh, tol=1e-
     # remove common faces from A to get difference mesh C
     uncommon_faces = np.setdiff1d(range(len(mesh_A.faces)), common_faces)
 
+    # transfer faces from uncommon to common if they are actually close to B (i.e. within tol) but were missed by the KDTree query due to its approximation, by rechecking the distance of uncommon faces to B using the proximity query
+    transferred_faces = recheck_intersection_proxQ(mesh_A, mesh_B, uncommon_faces, tol)
+
+    # Update common and uncommon faces after rechecking
+    common_faces = np.array(common_faces + transferred_faces)
+    uncommon_faces = np.setdiff1d(uncommon_faces, transferred_faces)
+    common_faces.sort()
+    uncommon_faces.sort()
+
     # Make two submeshes C and D from  A with the common faces and uncommon faces respectively
     mesh_C = mesh_A.submesh([common_faces], append=True)
     mesh_D = mesh_A.submesh([uncommon_faces], append=True)
 
     return {"intersection": mesh_C, "difference": mesh_D}
+
+
+def recheck_intersection_proxQ(
+    mesh_A: Trimesh, mesh_B: Trimesh, uncommon_faces_A, tol=1e-5
+):
+
+    proxB = trimesh.proximity.ProximityQuery(mesh_B)
+
+    transferred_faces = []
+
+    for iA in uncommon_faces_A:
+        centroid = mesh_A.triangles_center[iA]
+        dist = abs(proxB.signed_distance([centroid])[0])
+
+        if dist <= tol:
+            transferred_faces.append(iA)
+            print(
+                f"Face {iA} transferred from uncommon to common. Distance to B = {dist}"
+            )
+
+    return transferred_faces
 
 
 # def common(mesh_A: Trimesh, mesh_B: Trimesh, KDTREE_common_faces, tol=1e-5):

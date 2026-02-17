@@ -17,7 +17,8 @@ def mesh_faces_intersection_difference(mesh_A: Trimesh, mesh_B: Trimesh, tol=1e-
     # extract faces of A that are close to B (i.e. common surface)
     for i, tri in enumerate(mesh_A.triangles):
         center = tri.mean(axis=0)
-        dist = abs(proxB.signed_distance([center])[0])
+        dist = proxB.on_surface([center])[1][0]
+        # dist = abs(proxB.signed_distance([center])[0])
 
         if dist < tol:
             common_faces.append(i)

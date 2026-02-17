@@ -1,14 +1,14 @@
 import trimesh
-from .hash_intersection_algo import hash_intersection_algo
+from .algo import convexhull_difference_algo
 from .io_path import OUT_DIR
 
 
-def test_hash_intersection():
+def test_convexhull_difference_algo():
     # Load the original mesh
     solid_volume = trimesh.load(OUT_DIR / "0. solid-volume.stl")
 
     # Run the hash intersection algorithm
-    fluid_volumes_walls_inlets_outlets = hash_intersection_algo(solid_volume)
+    fluid_volumes_walls_inlets_outlets = convexhull_difference_algo(solid_volume)
 
     print(fluid_volumes_walls_inlets_outlets)
 
