@@ -1,20 +1,18 @@
 from trimesh import Trimesh
 import numpy as np
-import scipy.spatial as spatial
-import trimesh
 
 """ Mesh faces : A ∩ B = C """
 """ Mesh faces : A - B = D """
 
 
-def mesh_faces_intersection_difference(mesh_A: Trimesh, mesh_B: Trimesh,treeB, proxB, tol=1e-5):
+def mesh_faces_intersection_difference(
+    mesh_A: Trimesh, mesh_B: Trimesh, treeB, proxB, tol=1e-5
+):
 
     centA = mesh_A.triangles_center
 
     normA = mesh_A.face_normals
     normB = mesh_B.face_normals
-
-
 
     tol_dot = 1e-7  # tolerance for dot product to consider normals as parallel (i.e. faces are coplanar)
 
@@ -53,10 +51,7 @@ def mesh_faces_intersection_difference(mesh_A: Trimesh, mesh_B: Trimesh,treeB, p
     return {"intersection": mesh_C, "difference": mesh_D}
 
 
-
-def recheck_intersection_proxQ(
-    mesh_A: Trimesh, proxB, uncommon_faces_A, tol=1e-5
-):
+def recheck_intersection_proxQ(mesh_A: Trimesh, proxB, uncommon_faces_A, tol=1e-5):
 
     transferred_faces = []
 

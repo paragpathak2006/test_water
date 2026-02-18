@@ -1,14 +1,15 @@
-from locale import format_string
 import time
 
 
 class Variant:
 
-    def BASELINE(s : str):
+    def BASELINE(s: str):
         return "Baseline " + s
-    def KDTREE(s : str):
+
+    def KDTREE(s: str):
         return "KDtree " + s
-    def HASH_INTERSECTION(s : str):
+
+    def HASH_INTERSECTION(s: str):
         return "Hash " + s
 
 
@@ -56,14 +57,23 @@ class PerfLog:
         # Print header
         row_format = "{:<35} | {:<30} "
         print(row_format.format("Method Name ", "Time (ms)"))
-        print("-" * 60) # Separator
+        print("-" * 60)  # Separator
         for name, times in PerfLog._events.items():
             if isinstance(times, list):
                 total_time = sum(times)
                 avg_time = total_time / len(times)
-                print(row_format.format(f" 📍 {name:20} ",f" Δt = ⏰ {times} , avg = {avg_time * 1e3:8.4f}ms (over {len(times)} runs)"))
+                print(
+                    row_format.format(
+                        f" 📍 {name:20} ",
+                        f" Δt = ⏰ {times} , avg = {avg_time * 1e3:8.4f}ms (over {len(times)} runs)",
+                    )
+                )
             else:
                 if isinstance(name, str) and name.startswith("-----------------------"):
-                    print("-" * 60) # Separator
+                    print("-" * 60)  # Separator
                 else:
-                    print(row_format.format(f" 📍 {name:20} ",f" Δt = ⏰ {times * 1e3:8.4f}ms"))
+                    print(
+                        row_format.format(
+                            f" 📍 {name:20} ", f" Δt = ⏰ {times * 1e3:8.4f}ms"
+                        )
+                    )

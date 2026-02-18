@@ -5,13 +5,17 @@ import numpy as np
 """ Mesh faces : A ∩ B = C """
 """ Mesh faces : A - B = D """
 
-def mesh_faces_intersection_difference(mesh_A: Trimesh, mesh_B: Trimesh, tol=1e-5):
 
-    # Compute proximity query for mesh_B
-    proxB = trimesh.proximity.ProximityQuery(mesh_B)
-    return mesh_faces_intersection_difference(mesh_A, proxB, tol)
+# def mesh_faces_intersection_difference(mesh_A: Trimesh, mesh_B: Trimesh, tol=1e-5):
 
-def mesh_faces_intersection_difference(mesh_A: Trimesh, prox_B: trimesh.proximity.ProximityQuery, tol=1e-5):
+#     # Compute proximity query for mesh_B
+#     proxB = trimesh.proximity.ProximityQuery(mesh_B)
+#     return mesh_faces_intersection_difference(mesh_A, proxB, tol)
+
+
+def mesh_faces_intersection_difference(
+    mesh_A: Trimesh, prox_B: trimesh.proximity.ProximityQuery, tol=1e-5
+):
 
     # List to store indices of faces in A that are close to B (i.e. common surface)
     common_faces = []

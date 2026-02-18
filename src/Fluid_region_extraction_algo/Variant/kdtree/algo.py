@@ -29,7 +29,9 @@ def convexhull_difference_algo(solid_volume: Trimesh):
 
     print("\nRunning kdtree convex hull difference algorithm...\n")
     fluid_volumes = PerfLog.log(
-        Variant.KDTREE(Algo.CONVEX_HULL_DIFFERENCE), convex_hull_difference, solid_volume
+        Variant.KDTREE(Algo.CONVEX_HULL_DIFFERENCE),
+        convex_hull_difference,
+        solid_volume,
     )
 
     if fluid_volumes is None:
@@ -52,13 +54,13 @@ def convexhull_difference_algo(solid_volume: Trimesh):
     prox_solid = PerfLog.log(
         Variant.KDTREE(Algo.PROXIMITY_CONSTRUCT),
         trimesh.proximity.ProximityQuery,
-        solid_volume
+        solid_volume,
     )
     # compute only once KDTree for solid volume to be used in intersection-difference method for extracting fluid walls and inlet-outlet boundaries
-    tree_solid =  PerfLog.log(
+    tree_solid = PerfLog.log(
         Variant.KDTREE(Algo.TREE_CONSTRUCT),
         spatial.KDTree,
-        solid_volume.triangles_center
+        solid_volume.triangles_center,
     )
 
     for i, fluid_volume in enumerate(fluid_volumes):
@@ -77,7 +79,7 @@ def convexhull_difference_algo(solid_volume: Trimesh):
             fluid_volumes[i],
             solid_volume,
             tree_solid,
-            prox_solid
+            prox_solid,
         )
 
         fluid_wall = fluid_boundary["intersection"]

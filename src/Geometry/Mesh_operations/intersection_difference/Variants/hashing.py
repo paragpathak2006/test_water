@@ -1,12 +1,13 @@
 from trimesh import Trimesh
 import numpy as np
-import trimesh
 
 """ Mesh faces : A ∩ B = C """
 """ Mesh faces : A - B = D """
 
 
-def mesh_faces_intersection_difference(mesh_A: Trimesh, mesh_B: Trimesh, hashtableB, proxB, tol=1e-5):
+def mesh_faces_intersection_difference(
+    mesh_A: Trimesh, mesh_B: Trimesh, hashtableB, proxB, tol=1e-5
+):
 
     common_faces = intersect_faces(mesh_A, mesh_B, hashtableB)
     # remove common faces from A to get difference mesh C
@@ -29,9 +30,7 @@ def mesh_faces_intersection_difference(mesh_A: Trimesh, mesh_B: Trimesh, hashtab
     return {"intersection": mesh_C, "difference": mesh_D}
 
 
-def recheck_intersection_proxQ(
-    mesh_A: Trimesh, proxB, uncommon_faces_A, tol=1e-5
-):
+def recheck_intersection_proxQ(mesh_A: Trimesh, proxB, uncommon_faces_A, tol=1e-5):
 
     transferred_faces = []
 

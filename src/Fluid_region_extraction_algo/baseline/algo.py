@@ -30,7 +30,9 @@ def convexhull_difference_algo(solid_volume: Trimesh):
 
     print("\nRunning baseline convex hull difference algorithm...\n")
     fluid_volumes = PerfLog.log(
-        Variant.BASELINE(Algo.CONVEX_HULL_DIFFERENCE), convex_hull_difference, solid_volume
+        Variant.BASELINE(Algo.CONVEX_HULL_DIFFERENCE),
+        convex_hull_difference,
+        solid_volume,
     )
 
     if fluid_volumes is None:
@@ -51,7 +53,10 @@ def convexhull_difference_algo(solid_volume: Trimesh):
 
     # compute proximity query for solid volume to be used in intersection-difference method for extracting fluid walls and inlet-outlet boundaries
     prox_solid_volume = PerfLog.log(
-            Variant.BASELINE(Algo.PROXIMITY_CONSTRUCT),trimesh.proximity.ProximityQuery,solid_volume)
+        Variant.BASELINE(Algo.PROXIMITY_CONSTRUCT),
+        trimesh.proximity.ProximityQuery,
+        solid_volume,
+    )
 
     for i, fluid_volume in enumerate(fluid_volumes):
         print("\nExtracting fluid walls and inlet-outlet boundaries...")
@@ -68,7 +73,7 @@ def convexhull_difference_algo(solid_volume: Trimesh):
             Variant.BASELINE(Algo.MESH_INTERSECTION_DIFFERENCE(i)),
             mesh_faces_intersection_difference,
             fluid_volumes[i],
-            prox_solid_volume
+            prox_solid_volume,
         )
 
         fluid_wall = fluid_boundary["intersection"]

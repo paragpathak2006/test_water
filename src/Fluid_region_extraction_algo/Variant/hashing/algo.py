@@ -52,13 +52,15 @@ def convexhull_difference_algo(solid_volume: Trimesh):
 
     # compute only once proximity query for solid volume to be used in intersection-difference method for extracting fluid walls and inlet-outlet boundaries
     prox_solid = PerfLog.log(
-            Variant.HASH_INTERSECTION(Algo.PROXIMITY_CONSTRUCT),trimesh.proximity.ProximityQuery,solid_volume)
+        Variant.HASH_INTERSECTION(Algo.PROXIMITY_CONSTRUCT),
+        trimesh.proximity.ProximityQuery,
+        solid_volume,
+    )
 
     # compute only once hash table for solid volume to be used in intersection-difference method for extracting fluid walls and inlet-outlet boundaries
     table_solid = PerfLog.log(
         Variant.HASH_INTERSECTION(Algo.HASH_CONSTRUCT), build_face_hash, solid_volume
     )
-
 
     for i, fluid_volume in enumerate(fluid_volumes):
         print("\nExtracting fluid walls and inlet-outlet boundaries...")
@@ -76,7 +78,7 @@ def convexhull_difference_algo(solid_volume: Trimesh):
             fluid_volumes[i],
             solid_volume,
             table_solid,
-            prox_solid
+            prox_solid,
         )
 
         fluid_wall = fluid_boundary["intersection"]
