@@ -1,11 +1,31 @@
+from src.Performance.perfLog import Variant
+from src.Fluid_region_extraction_algo.baseline.io_path import (
+    OUT_DIR as BASELINE_OUT_DIR,
+)
+from src.Fluid_region_extraction_algo.Variant.kdtree.io_path import (
+    OUT_DIR as KDTREE_OUT_DIR,
+)
+from src.Fluid_region_extraction_algo.Variant.hashing.io_path import (
+    OUT_DIR as HASHING_OUT_DIR,
+)
+
+
 def export_fluid_volumes_and_boundaries(
-    OUT_DIR,
+    variant,
     i,
     fluid_volume,
     fluid_wall,
     fluid_inlets_outlets_combined,
     fluid_inlets_outlets,
 ):
+
+    match variant:
+        case Variant.BASELINE:
+            OUT_DIR = BASELINE_OUT_DIR
+        case Variant.KDTREE:
+            OUT_DIR = KDTREE_OUT_DIR
+        case Variant.HASH_INTERSECTION:
+            OUT_DIR = HASHING_OUT_DIR
 
     print(f"\n📁 Exporting file : fluid-volume-{i} ...")
 

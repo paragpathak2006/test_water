@@ -48,7 +48,7 @@ def mesh_faces_intersection_difference(
     mesh_C = mesh_A.submesh([common_faces], append=True)
     mesh_D = mesh_A.submesh([uncommon_faces], append=True)
 
-    return {"intersection": mesh_C, "difference": mesh_D}
+    return mesh_C, mesh_D
 
 
 def recheck_intersection_proxQ(mesh_A: Trimesh, proxB, uncommon_faces_A, tol=1e-5):

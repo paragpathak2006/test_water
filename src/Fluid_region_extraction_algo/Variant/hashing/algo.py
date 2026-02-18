@@ -22,7 +22,7 @@ from src.Geometry.Processing.post import (
 from src.Geometry.Processing.export import export_fluid_volumes_and_boundaries
 
 
-def convexhull_difference_algo(solid_volume: Trimesh):
+def fluid_extraction_algo(solid_volume: Trimesh):
 
     if preprocess_solid_volume_for_convexhull_difference(solid_volume) is None:
         return None
@@ -42,7 +42,7 @@ def convexhull_difference_algo(solid_volume: Trimesh):
 
     print("\n✅ Number of fluid volumes : ", len(fluid_volumes))
 
-    fluid_embedded_path = (
+    embedded_volumes = (
         []
     )  # result list to store fluid volume meshes that are embedded in the solid volume (i.e. not separate disconnected components) and can be used for CFD simulation without further processing
     fluid_walls = []  # result list to store fluid wall meshes
@@ -66,13 +66,13 @@ def convexhull_difference_algo(solid_volume: Trimesh):
         print("\nExtracting fluid walls and inlet-outlet boundaries...")
 
         print("\nProcessing fluid volume#", i, " ...")
-        print("\nvolume = ", fluid_volumes[i].volume)
+        print("with volume = ", fluid_volumes[i].volume)
         print("surface area = ", fluid_volumes[i].area)
 
         print("\nExtracting fluid wall and inlet-outlet boundaries...\n")
 
         # extract fluid wall and inlet-outlet boundaries using intersection-difference method
-        fluid_boundary = PerfLog.log(
+        fluid_wall, fluid_inlets_outlets_combined = PerfLog.log(
             Variant.HASH_INTERSECTION(Algo.MESH_INTERSECTION_DIFFERENCE(i)),
             mesh_faces_intersection_difference,
             fluid_volumes[i],
@@ -81,8 +81,6 @@ def convexhull_difference_algo(solid_volume: Trimesh):
             prox_solid,
         )
 
-        fluid_wall = fluid_boundary["intersection"]
-        fluid_inlets_outlets_combined = fluid_boundary["difference"]
         fluid_inlets_outlets = PerfLog.log(
             Variant.HASH_INTERSECTION(Algo.SPLIT(i)),
             fluid_inlets_outlets_combined.split,
@@ -114,16 +112,13 @@ def convexhull_difference_algo(solid_volume: Trimesh):
                 fluid_inlets_outlets,
             )
 
-            fluid_embedded_path.append(
+            embedded_volumes.append(
                 fluid_volumes[i]
             )  # capturing the fluid volume mesh that form a valid path with atleast 2 open boundaries (i.e. inlet and outlet)
             fluid_walls.append(fluid_wall)  # capturing the fluid wall mesh
             fluid_inlets_outlets_all.append(
                 fluid_inlets_outlets
             )  # capturing the list of inlet-outlet boundary meshes
-    PerfLog.line(1)
-    return {
-        "fluid_volumes": fluid_embedded_path,
-        "fluid_walls": fluid_walls,
-        "all_fluid_inlets_outlets": fluid_inlets_outlets_all,
-    }
+
+    PerfLog.line()
+    return embedded_volumes, fluid_walls, fluid_inlets_outlets_all

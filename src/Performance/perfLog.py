@@ -31,14 +31,18 @@ class Algo:
 class PerfLog:
     _events = {}
     _start = time.perf_counter()
+    _line_count = 0
 
     @staticmethod
     def start(name: str):
         PerfLog._events[name] = time.perf_counter()
 
     @staticmethod
-    def line(i):
-        PerfLog._events[f"-----------------------{i}"] = "-------------------"
+    def line():
+        PerfLog._events[f"-----------------------{PerfLog._line_count}"] = (
+            "-------------------"
+        )
+        PerfLog._line_count += 1
 
     @staticmethod
     def log(name: str, func: callable, *args, **kwargs):
