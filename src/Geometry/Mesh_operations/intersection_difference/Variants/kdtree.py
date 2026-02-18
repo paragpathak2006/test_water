@@ -7,15 +7,14 @@ import trimesh
 """ Mesh faces : A - B = D """
 
 
-def mesh_faces_intersection_difference(mesh_A: Trimesh, mesh_B: Trimesh, tol=1e-5):
+def mesh_faces_intersection_difference(mesh_A: Trimesh, mesh_B: Trimesh,treeB, proxB, tol=1e-5):
 
     centA = mesh_A.triangles_center
-    centB = mesh_B.triangles_center
 
     normA = mesh_A.face_normals
     normB = mesh_B.face_normals
 
-    treeB = spatial.KDTree(centB)
+
 
     tol_dot = 1e-7  # tolerance for dot product to consider normals as parallel (i.e. faces are coplanar)
 
@@ -39,7 +38,7 @@ def mesh_faces_intersection_difference(mesh_A: Trimesh, mesh_B: Trimesh, tol=1e-
     uncommon_faces = np.setdiff1d(range(len(mesh_A.faces)), common_faces)
 
     # transfer faces from uncommon to common if they are actually close to B (i.e. within tol) but were missed by the KDTree query due to its approximation, by rechecking the distance of uncommon faces to B using the proximity query
-    transferred_faces = recheck_intersection_proxQ(mesh_A, mesh_B, uncommon_faces, tol)
+    transferred_faces = recheck_intersection_proxQ(mesh_A, proxB, uncommon_faces, tol)
 
     # Update common and uncommon faces after rechecking
     common_faces = np.array(common_faces + transferred_faces)
@@ -54,11 +53,10 @@ def mesh_faces_intersection_difference(mesh_A: Trimesh, mesh_B: Trimesh, tol=1e-
     return {"intersection": mesh_C, "difference": mesh_D}
 
 
-def recheck_intersection_proxQ(
-    mesh_A: Trimesh, mesh_B: Trimesh, uncommon_faces_A, tol=1e-5
-):
 
-    proxB = trimesh.proximity.ProximityQuery(mesh_B)
+def recheck_intersection_proxQ(
+    mesh_A: Trimesh, proxB, uncommon_faces_A, tol=1e-5
+):
 
     transferred_faces = []
 

@@ -10,6 +10,12 @@ def baseline_validation_check(mesh: Trimesh):
         )
         print("Volume of mesh : ", mesh.volume)
 
+        if abs(mesh.volume) < 1e-6:
+            print(
+                "⚠️ However, the volume of the mesh is very small (close to zero). This may indicate a degenerate or nearly flat mesh. Please check the mesh for issues such as coplanar faces or very thin geometry."
+            )
+            return False
+
     else:
         print(
             "❌ The mesh does NOT represent a valid watertight volume. Check the mesh for issues such as holes, non-manifold edges, or inconsistent normals."

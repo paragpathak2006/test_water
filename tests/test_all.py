@@ -15,7 +15,7 @@ from src.Fluid_region_extraction_algo.Variant.hashing.test import (
     test_convexhull_difference_algo as hash_algo_test,
 )
 
-from src.Performance.perfLog import PerfLog, TargetAlgo
+from src.Performance.perfLog import PerfLog, Algo, Variant
 
 from tests.io_path import OUT_DIR as benchmark_OUT_DIR
 
@@ -89,8 +89,8 @@ class Run_Unit_Tests(unittest.TestCase):
         )
 
         total_time = (
-            PerfLog._events[TargetAlgo.BASELINE.CONVEX_HULL_DIFFERENCE]
-            + PerfLog._events[TargetAlgo.BASELINE.MESH_INTERSECTION_DIFFERENCE(0)]
+            PerfLog._events[Variant.BASELINE(Algo.CONVEX_HULL_DIFFERENCE)]
+            + PerfLog._events[Variant.BASELINE(Algo.MESH_INTERSECTION_DIFFERENCE(0))]
         )
 
         self.assertLessEqual(
@@ -125,8 +125,8 @@ class Run_Unit_Tests(unittest.TestCase):
         )
 
         total_time = (
-            PerfLog._events[TargetAlgo.KDTREE.CONVEX_HULL_DIFFERENCE]
-            + PerfLog._events[TargetAlgo.KDTREE.MESH_INTERSECTION_DIFFERENCE(0)]
+            PerfLog._events[Variant.KDTREE(Algo.CONVEX_HULL_DIFFERENCE)]
+            + PerfLog._events[Variant.KDTREE(Algo.MESH_INTERSECTION_DIFFERENCE(0))]
         )
 
         self.assertLessEqual(
@@ -157,9 +157,9 @@ class Run_Unit_Tests(unittest.TestCase):
         print("\n\n  P3️⃣   testing performance of hash intersection algorithm...\n")
 
         total_time = (
-            PerfLog._events[TargetAlgo.HASH_INTERSECTION.CONVEX_HULL_DIFFERENCE]
+            PerfLog._events[Variant.HASH_INTERSECTION(Algo.CONVEX_HULL_DIFFERENCE)]
             + PerfLog._events[
-                TargetAlgo.HASH_INTERSECTION.MESH_INTERSECTION_DIFFERENCE(0)
+                Variant.HASH_INTERSECTION(Algo.MESH_INTERSECTION_DIFFERENCE(0))
             ]
         )
 

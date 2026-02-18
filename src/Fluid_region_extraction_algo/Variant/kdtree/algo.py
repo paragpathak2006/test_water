@@ -1,4 +1,6 @@
+from scipy import spatial
 from trimesh import Trimesh
+import trimesh
 
 # from  Convexhull_operations.self_difference import convex_hull_difference
 # from .Mesh_operations.intersection_difference import mesh_faces_intersection_difference
@@ -10,7 +12,7 @@ from src.Geometry.Mesh_operations.intersection_difference.Variants.kdtree import
 )
 
 from .io_path import OUT_DIR
-from src.Performance.perfLog import PerfLog, TargetAlgo
+from src.Performance.perfLog import PerfLog, Algo, Variant
 from src.Geometry.Processing.pre import (
     preprocess_solid_volume_for_convexhull_difference,
 )
@@ -27,7 +29,7 @@ def convexhull_difference_algo(solid_volume: Trimesh):
 
     print("\nRunning kdtree convex hull difference algorithm...\n")
     fluid_volumes = PerfLog.log(
-        TargetAlgo.KDTREE.CONVEX_HULL_DIFFERENCE, convex_hull_difference, solid_volume
+        Variant.KDTREE(Algo.CONVEX_HULL_DIFFERENCE), convex_hull_difference, solid_volume
     )
 
     if fluid_volumes is None:
@@ -46,6 +48,19 @@ def convexhull_difference_algo(solid_volume: Trimesh):
         []
     )  # result list to store lists of inlet-outlet boundary meshes for each fluid volume
 
+    # compute only once proximity query for solid volume to be used in intersection-difference method for extracting fluid walls and inlet-outlet boundaries
+    prox_solid = PerfLog.log(
+        Variant.KDTREE(Algo.PROXIMITY_CONSTRUCT),
+        trimesh.proximity.ProximityQuery,
+        solid_volume
+    )
+    # compute only once KDTree for solid volume to be used in intersection-difference method for extracting fluid walls and inlet-outlet boundaries
+    tree_solid =  PerfLog.log(
+        Variant.KDTREE(Algo.TREE_CONSTRUCT),
+        spatial.KDTree,
+        solid_volume.triangles_center
+    )
+
     for i, fluid_volume in enumerate(fluid_volumes):
         print("\nExtracting fluid walls and inlet-outlet boundaries...")
 
@@ -57,16 +72,18 @@ def convexhull_difference_algo(solid_volume: Trimesh):
 
         # extract fluid wall and inlet-outlet boundaries using intersection-difference method
         fluid_boundary = PerfLog.log(
-            TargetAlgo.KDTREE.MESH_INTERSECTION_DIFFERENCE(i),
+            Variant.KDTREE(Algo.MESH_INTERSECTION_DIFFERENCE(i)),
             mesh_faces_intersection_difference,
             fluid_volumes[i],
             solid_volume,
+            tree_solid,
+            prox_solid
         )
 
         fluid_wall = fluid_boundary["intersection"]
         fluid_inlets_outlets_combined = fluid_boundary["difference"]
         fluid_inlets_outlets = PerfLog.log(
-            TargetAlgo.KDTREE.SPLIT(i),
+            Variant.KDTREE(Algo.SPLIT(i)),
             fluid_inlets_outlets_combined.split,
             only_watertight=False,
         )
@@ -103,7 +120,7 @@ def convexhull_difference_algo(solid_volume: Trimesh):
             fluid_inlets_outlets_all.append(
                 fluid_inlets_outlets
             )  # capturing the list of inlet-outlet boundary meshes
-
+    PerfLog.line(2)
     return {
         "fluid_volumes": fluid_embedded_path,
         "fluid_walls": fluid_walls,

@@ -1,4 +1,5 @@
 from trimesh import Trimesh
+import trimesh
 
 # from  Convexhull_operations.self_difference import convex_hull_difference
 # from .Mesh_operations.intersection_difference import mesh_faces_intersection_difference
@@ -6,11 +7,12 @@ from src.Geometry.Convexhull_operations.convex_hull_difference.baseline import (
     convex_hull_difference,
 )
 from src.Geometry.Mesh_operations.intersection_difference.Variants.hashing import (
+    build_face_hash,
     mesh_faces_intersection_difference,
 )
 
 from .io_path import OUT_DIR
-from src.Performance.perfLog import PerfLog, TargetAlgo
+from src.Performance.perfLog import PerfLog, Algo, Variant
 from src.Geometry.Processing.pre import (
     preprocess_solid_volume_for_convexhull_difference,
 )
@@ -27,7 +29,7 @@ def convexhull_difference_algo(solid_volume: Trimesh):
 
     print("\nRunning hash intersection convex hull difference algorithm...\n")
     fluid_volumes = PerfLog.log(
-        TargetAlgo.HASH_INTERSECTION.CONVEX_HULL_DIFFERENCE,
+        Variant.HASH_INTERSECTION(Algo.CONVEX_HULL_DIFFERENCE),
         convex_hull_difference,
         solid_volume,
     )
@@ -48,6 +50,16 @@ def convexhull_difference_algo(solid_volume: Trimesh):
         []
     )  # result list to store lists of inlet-outlet boundary meshes for each fluid volume
 
+    # compute only once proximity query for solid volume to be used in intersection-difference method for extracting fluid walls and inlet-outlet boundaries
+    prox_solid = PerfLog.log(
+            Variant.HASH_INTERSECTION(Algo.PROXIMITY_CONSTRUCT),trimesh.proximity.ProximityQuery,solid_volume)
+
+    # compute only once hash table for solid volume to be used in intersection-difference method for extracting fluid walls and inlet-outlet boundaries
+    table_solid = PerfLog.log(
+        Variant.HASH_INTERSECTION(Algo.HASH_CONSTRUCT), build_face_hash, solid_volume
+    )
+
+
     for i, fluid_volume in enumerate(fluid_volumes):
         print("\nExtracting fluid walls and inlet-outlet boundaries...")
 
@@ -59,16 +71,18 @@ def convexhull_difference_algo(solid_volume: Trimesh):
 
         # extract fluid wall and inlet-outlet boundaries using intersection-difference method
         fluid_boundary = PerfLog.log(
-            TargetAlgo.HASH_INTERSECTION.MESH_INTERSECTION_DIFFERENCE(i),
+            Variant.HASH_INTERSECTION(Algo.MESH_INTERSECTION_DIFFERENCE(i)),
             mesh_faces_intersection_difference,
             fluid_volumes[i],
             solid_volume,
+            table_solid,
+            prox_solid
         )
 
         fluid_wall = fluid_boundary["intersection"]
         fluid_inlets_outlets_combined = fluid_boundary["difference"]
         fluid_inlets_outlets = PerfLog.log(
-            TargetAlgo.HASH_INTERSECTION.SPLIT(i),
+            Variant.HASH_INTERSECTION(Algo.SPLIT(i)),
             fluid_inlets_outlets_combined.split,
             only_watertight=False,
         )
@@ -105,7 +119,7 @@ def convexhull_difference_algo(solid_volume: Trimesh):
             fluid_inlets_outlets_all.append(
                 fluid_inlets_outlets
             )  # capturing the list of inlet-outlet boundary meshes
-
+    PerfLog.line(1)
     return {
         "fluid_volumes": fluid_embedded_path,
         "fluid_walls": fluid_walls,

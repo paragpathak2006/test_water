@@ -130,24 +130,41 @@ Event times for the following algorithms were tabulated
 
 Event Times 
 
-| Baseline Algo          ||
-|:------|:-------|
-| 📍 CHD           |Δt = ⏰ 18.9536ms|
+<!-- | 📍 CHD           |Δt = ⏰ 18.9536ms|
 | 📍 mesh (∩,Δ) - vol#0  |Δt = ⏰223.4202ms|
 | 📍 split - vol#0  |Δt = ⏰  2.4141ms|
 
-| KDtree ||
-|:------|:-------|
 | 📍 CHD            |Δt = ⏰  6.8467ms|
 | 📍 mesh (∩,Δ) - vol#0  |Δt = ⏰ 14.7903ms|
 | 📍 split - vol#0  |Δt = ⏰  1.3825ms|
 
-| Hash Intersection Algo  ||
-|:------|:-------|
 | 📍 CHD  |Δt = ⏰  8.4248ms|
 | 📍 mesh (∩,Δ) - vol#0  |Δt = ⏰ 28.9451ms|
-| 📍 split - vol#0  |Δt = ⏰  1.6844ms|
+| 📍 split - vol#0  |Δt = ⏰  1.6844ms| -->
 
+
+| Baseline Algo          ||
+|:------|:-------|
+| 📍 1️⃣ CHD                |  Δt = ⏰  14.3517ms| 
+| 📍 2️⃣ Mesh (∩,Δ) : 0    |  Δt = ⏰ 212.3191ms|
+| 📍 3️⃣ Split : 0         |  Δt = ⏰   2.1799ms|
+| 📍 Proximity Build     |  Δt = ⏰   0.0011ms|
+
+| KDtree ||
+|:------|:-------|
+| 📍 1️⃣ CHD                  |  Δt = ⏰  13.0823ms|
+| 📍 2️⃣ Mesh (∩,Δ) : 0      |  Δt = ⏰  34.2108ms|             
+| 📍 3️⃣ Split : 0           |  Δt = ⏰   2.3255ms|             
+| 📍 Proximity Build       |  Δt = ⏰   0.0009ms|             
+| 📍 KDTree Build          |  Δt = ⏰   0.2166ms|             
+
+| Hash Intersection Algo  ||
+|:------|:-------|
+| 📍 1️⃣ CHD                    |  Δt = ⏰  11.3334ms|             
+| 📍 2️⃣ Mesh (∩,Δ) : 0        |  Δt = ⏰  38.8053ms|             
+| 📍 3️⃣ Split : 0             |  Δt = ⏰   1.2564ms|     
+| 📍 Proximity Build         |  Δt = ⏰   0.0021ms|             
+| 📍 Hash Build              |  Δt = ⏰  22.8052ms|             
 
 ### Github workflows for CI/CD
 GitHub workflows were enabled for CI/CD to ensure performance, correctness, linting and formatting stay optimal throughout the product development cycle.

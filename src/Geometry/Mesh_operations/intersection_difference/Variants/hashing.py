@@ -6,14 +6,14 @@ import trimesh
 """ Mesh faces : A - B = D """
 
 
-def mesh_faces_intersection_difference(mesh_A: Trimesh, mesh_B: Trimesh, tol=1e-5):
+def mesh_faces_intersection_difference(mesh_A: Trimesh, mesh_B: Trimesh, hashtableB, proxB, tol=1e-5):
 
-    common_faces = intersect_faces(mesh_A, mesh_B)
+    common_faces = intersect_faces(mesh_A, mesh_B, hashtableB)
     # remove common faces from A to get difference mesh C
     uncommon_faces = np.setdiff1d(range(len(mesh_A.faces)), common_faces)
 
     # transfer faces from uncommon to common if they are actually close to B (i.e. within tol) but were missed by the KDTree query due to its approximation, by rechecking the distance of uncommon faces to B using the proximity query
-    transferred_faces = recheck_intersection_proxQ(mesh_A, mesh_B, uncommon_faces, tol)
+    transferred_faces = recheck_intersection_proxQ(mesh_A, proxB, uncommon_faces, tol)
 
     # Update common and uncommon faces after rechecking
     common_faces = np.array(common_faces + transferred_faces)
@@ -30,10 +30,8 @@ def mesh_faces_intersection_difference(mesh_A: Trimesh, mesh_B: Trimesh, tol=1e-
 
 
 def recheck_intersection_proxQ(
-    mesh_A: Trimesh, mesh_B: Trimesh, uncommon_faces_A, tol=1e-5
+    mesh_A: Trimesh, proxB, uncommon_faces_A, tol=1e-5
 ):
-
-    proxB = trimesh.proximity.ProximityQuery(mesh_B)
 
     transferred_faces = []
 
@@ -50,15 +48,14 @@ def recheck_intersection_proxQ(
     return transferred_faces
 
 
-def intersect_faces(meshA: Trimesh, meshB: Trimesh):
-    tableB = build_face_hash(meshB)
+def intersect_faces(meshA: Trimesh, meshB: Trimesh, hashtableB):
     common = []
 
     for i, f in enumerate(meshA.faces):
         verts = meshA.vertices[f]
         key = face_key(verts)
 
-        if key in tableB:
+        if key in hashtableB:
             common.append(i)
 
     return common
