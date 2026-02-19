@@ -60,7 +60,7 @@ Operation 1 is a volume operation, and Operations 2 and 3 are surface operations
 
 ```mermaid
 graph LR;
-    X(Baseline Convex hull Difference) --> A(convex hull difference);
+    X(Fluid region extraction) --> A(convex hull difference);
     X --> B(mesh surface intersection);
     X --> C(mesh surface difference);
     style X fill:#111111,stroke:#333,stroke-width:4px
@@ -72,7 +72,7 @@ graph LR;
 Code follows the following flow
 ```mermaid
 graph LR;
-    S[solid.stl] --> A(Baseline Convex hull Difference)
+    S[solid.stl] --> A(Fluid region extraction)
     A --> F[fluid.stl];
     style S fill:#111111,stroke:#333,stroke-width:4px
     style F fill:#111111,stroke:#333,stroke-width:4px
