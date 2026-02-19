@@ -22,6 +22,7 @@ IO(🟦)→fluid inlets and outlets
 Convex Hull[S(🟧)] - S(🟧) → F(🟦)₀, F(🟦)₁...
 ```
 2. One by one iterate over the list of concavities F(🟦)ᵢ
+found in the solid volume.
 3. Fluid wall extraction via intersection : 
 ```
 F(🟦)ᵢ ∩ S(🟧) → Wall(🟦)ᵢ
@@ -179,9 +180,6 @@ GitHub workflows were enabled for CI/CD to ensure performance, correctness, lint
 - Geometry also needs to have a single largest fluid volume with at least two openings for detecting a channel.
 
 ## Validation
-How do you ensure output geometries are watertight and mesh-ready
-
-Techniques used (if any) and their limitations
 
 Input and output geometry are validated using checks post-operation to verify water-tight geometry and ensure positive volume and consistent normals.
 
@@ -196,13 +194,14 @@ Both inputs and outputs were validated using this check.
 If the geometry validation check failed, geometry healing was attempted on both the inputs and outputs.
 ## Trade-offs
 - The Trimesh libraries were used to quickly create a baseline case for validation and saved development time. This, however, caused different mesh operations to be topologically and geometrically separate from each other, sacrificing performance. 
-- The approach was more focused on performance measurement for different variants of an algorithm, rather than optimization and in-depth analysis of the performance and accuracy issues of different geometric queries. 
+- In the interest of development time, the approach was more focused on performance measurement for different variants of an algorithm, rather than optimization and in-depth analysis of the performance and accuracy issues of different individual geometric queries. 
 - The topological and geometric optimization that was performed was the merging of an intersection and difference query into a single operation, and ensured that both were using the same geometry and topology while performing the operation.
 
 ## Future Improvements
 1. Currently, queries are using the geometry of the trimesh, and the inputs and outputs of different steps are topologically delinked. Bringing these different operations under a common topology will convert the intersection and difference operations into topological operations instead of geometric ones. 
 2. Implementing custom C++ algorithms, building efficient spatial indexing using HashMap 
 3. Converting the algorithms into SIMD algorithms can help utilize parallel architectures like CUDA for ultrafast computations.
+4. Add additional test cases for effective testing of variants.
 
 ## Tool Selection
 Libraries/frameworks chosen were 

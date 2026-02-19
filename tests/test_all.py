@@ -1,9 +1,6 @@
-import os
-from pathlib import Path
-import numpy as np
 import unittest
+from tests.helpers import files_compare, pre_cleanup_outputs
 
-import trimesh
 from src.Fluid_region_extraction_algo.test import test_fluid_extraction_algo
 
 from src.Performance.perfLog import PerfLog, Algo, Variant
@@ -22,43 +19,21 @@ from src.Fluid_region_extraction_algo.Variant.hashing.io_path import (
 
 
 class Run_Unit_Tests(unittest.TestCase):
+
     @classmethod
     def setUpClass(cls):
 
         print("\nSetting up fluid volume extraction algorithm test...\n")
 
-        cls.times = ["0.1", "0.1"]
         cls.maxTimeAllowed = 1  # time limit of 1 seconds
-
-        cls.benchmark_files_list()
         cls.pre_cleanup_output_dir()
 
         print("─────୨ৎ────୨ৎ────୨ৎ────୨ৎ────\n\n")
 
     @classmethod
-    def benchmark_files_list(cls):
-        cls.files = get_files_list(benchmark_OUT_DIR)
-        print("Files to be tested : ", cls.files)
-
-    @classmethod
     def pre_cleanup_output_dir(cls):
-        print("\nPre-cleaning up the output directory...\n")
-        for file in cls.files:
-            if file.startswith("0."):
-                continue
-
-            baseline_file = baseline_OUT_DIR / file
-            if os.path.exists(baseline_file):
-                os.remove(baseline_file)
-
-            hash_file = hash_OUT_DIR / file
-            if os.path.exists(hash_file):
-                os.remove(hash_file)
-
-            kdtree_file = kdtree_OUT_DIR / file
-            if os.path.exists(kdtree_file):
-                os.remove(kdtree_file)
-
+        print("Pre-cleaning output directories...")
+        pre_cleanup_outputs([baseline_OUT_DIR, hash_OUT_DIR, kdtree_OUT_DIR])
         print("Pre-cleanup done.\n\n")
 
     def test_baseline_correctness(self):
@@ -69,8 +44,7 @@ class Run_Unit_Tests(unittest.TestCase):
                 "❌ Baseline convex hull difference algorithm failed. Aborting test."
             )
 
-        self.files_compare(benchmark_OUT_DIR, baseline_OUT_DIR)
-
+        files_compare(self, benchmark_OUT_DIR, baseline_OUT_DIR)
         print("✅ Correctness test is OK\n\n")
         print("────────────────────────────────────────\n\n")
 
@@ -105,7 +79,7 @@ class Run_Unit_Tests(unittest.TestCase):
                 "❌ KDtree convex hull difference algorithm failed. Aborting test."
             )
 
-        self.files_compare(benchmark_OUT_DIR, kdtree_OUT_DIR)
+        files_compare(self, benchmark_OUT_DIR, kdtree_OUT_DIR)
 
         print("✅ Correctness test is OK\n\n")
         print("────────────────────────────────────────\n\n")
@@ -139,7 +113,7 @@ class Run_Unit_Tests(unittest.TestCase):
         if test_fluid_extraction_algo(Variant.HASH_INTERSECTION) is None:
             self.fail("❌ Hash intersection algorithm failed. Aborting test.")
 
-        self.files_compare(benchmark_OUT_DIR, hash_OUT_DIR)
+        files_compare(self, benchmark_OUT_DIR, hash_OUT_DIR)
 
         print("✅ Correctness test is OK\n\n")
         print("────────────────────────────────────────\n\n")
@@ -173,38 +147,6 @@ class Run_Unit_Tests(unittest.TestCase):
             "\n 4️⃣ All tests completed... \n 📝 ✅✅ Final performance report ✅✅\n"
         )
         PerfLog.report()
-
-    # Helper function to compare files in two directories
-    def files_compare(self, DIR1, DIR2):
-
-        files = get_files_list(DIR1)
-
-        for file in files:
-            print("📁 Comparing file : ", file)
-
-            mesh1 = trimesh.load(DIR1 / file)
-            mesh2 = trimesh.load(DIR2 / file)
-
-            self.assertTrue(
-                np.array_equal(mesh1.faces, mesh2.faces),
-                f"❌ Face arrays are not equal for file {file}",
-            )
-            self.assertTrue(
-                np.allclose(mesh1.vertices, mesh2.vertices),
-                f"❌ Vertex arrays are not close for file {file}",
-            )
-
-
-# Helper function to get list of files in a directory
-def get_files_list(DIR):
-    print(f"\nGetting list of files in directory : {DIR}")
-    files = [p.name for p in Path(DIR).iterdir() if p.is_file()]
-
-    print("files found : ")
-    for i, file in enumerate(files):
-        print(f"📁 {i}: {file}")
-
-    return files
 
 
 if __name__ == "__main__":
