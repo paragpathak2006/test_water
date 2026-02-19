@@ -4,7 +4,6 @@ Given a solid fluid volume, the task is to extract a fluid volume and surfaces f
 ## Approach
 The convex hull difference algorithm was chosen, as we are dealing with internal fluid cavities, and the given solid part was in STL format. It is also more exact as compared to other volumetric voxel-based methods and works for many cases of fluid channel extraction. Many library functions are readily available for handling the algorithm 
 
-![alt text](image.png)
 ## Algorithm Selection
 High-level strategy for extraction using the convex hull difference algorithm involves three operations in the following order. 
 1. convex hull difference,
@@ -18,27 +17,27 @@ F(🟦)→fluid volume
 IO(🟦)→fluid inlets and outlets
 ```
 1. Fluid volume extraction via self-difference by convex hull : 
-```
-Convex Hull[S(🟧)] - S(🟧) → F(🟦)₀, F(🟦)₁...
-```
+$$\text{Convex Hull}[S(🟧)] - S(🟧) → F(🟦)_0, F(🟦)_1...$$
+![alt text](image.png)
+
 2. One by one iterate over the list of concavities F(🟦)ᵢ
 found in the solid volume.
+
 3. Fluid wall extraction via intersection : 
-```
-F(🟦)ᵢ ∩ S(🟧) → Wall(🟦)ᵢ
-```
+
+$$F(🟦)_i ∩ S(🟧) → Wall(🟦)_i$$
+![alt text](image-5.png)
+
 4. Fluid inlet-outlet extraction via differences and splitting:
-```
-F(🟦)ᵢ - S(🟧) → IO(🟦)ᵢ
-```
+$$F(🟦)_i - S(🟧) → IO(🟦)_i$$
+![alt text](image-3.png)
+
 5. Split each IO set to get the inlets and outlets as separate
-```
-IO(🟦)ᵢ → IO(🟦)ᵢ,₀, IO(🟦)ᵢ,₁..., IO(🟦)ᵢ,ₙ
-```
+$$ IO(🟦)_i → IO(🟦)_{i,0} + IO(🟦)_{i,1} ... , IO(🟦)_{i,n}$$
+
 6. To validate the fluid channel for the volume, ensure that the number of inlets and outlets are greater than or equal to two.
-```
-n >= 2
-```
+
+$$ n \geq 2 → \text{Valid fluid path} $$
 
 ## Implementation Details
 Key design decisions, data structures used
@@ -48,6 +47,7 @@ Trimesh library was used for convexhull extraction and volumetric Booleans.
 
 ### Fluid boundary extraction
 Sample performance Report from baseline algorithm is given below
+
 
 | Baseline |  Δt  |
 |:------|:-------|
@@ -117,7 +117,6 @@ Different algorithmic approaches were also compared to a baseline approach to en
 
 #### Proximity correctness
 The Proximity mesh intersection algorithm worked correctly and produced reasonably correct output by observations. 
-
 #### KDtree correctness
 The KDtree mesh intersection failed for 4 faces and needed a proximity as an additional check for limited faces. This happened because Booleans didn't preserve face topology for flat surface subtractions. Therefore, the centroids didn't match for those faces. Once fix was added it worked correctly to give valid results.
 
