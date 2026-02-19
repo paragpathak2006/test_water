@@ -105,9 +105,12 @@ This function is responsible for finding the intersection between two mesh surfa
 ```
 Mesh surfaces: A ∩ B → C
 ```
+<img width="1902" height="880" alt="image" src="https://github.com/user-attachments/assets/3c4164bf-3d97-4c2d-b5cc-c4254ce28db9" />
+
 
 ### def [mesh surface difference](https://github.com/paragpathak2006/test_water/blob/main/src/Geometry/Mesh_operations/intersection_difference/baseline.py)(Mesh A, Mesh B) 
 This function is responsible for finding the difference between two mesh surfaces, A and B. Output mesh D is a surface mesh that is the difference between the two given meshes.
 ```
 Mesh surfaces: A - B → D
 ```
+<img width="1726" height="883" alt="image" src="https://github.com/user-attachments/assets/c7ebb410-f48e-4f7d-9ec9-98bcb7aa1df5" />
