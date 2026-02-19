@@ -17,7 +17,9 @@ F(🟦)→fluid volume
 IO(🟦)→fluid inlets and outlets
 ```
 1. Fluid volume extraction via self-difference by convex hull : 
+
 $$\text{Convex Hull}[S(🟧)] - S(🟧) → F(🟦)_0, F(🟦)_1...$$
+
 ![alt text](image.png)
 
 2. One by one iterate over the list of concavities F(🟦)ᵢ
@@ -26,13 +28,17 @@ found in the solid volume.
 3. Fluid wall extraction via intersection : 
 
 $$F(🟦)_i ∩ S(🟧) → Wall(🟦)_i$$
+
 ![alt text](image-5.png)
 
 4. Fluid inlet-outlet extraction via differences and splitting:
+
 $$F(🟦)_i - S(🟧) → IO(🟦)_i$$
+
 ![alt text](image-3.png)
 
 5. Split each IO set to get the inlets and outlets as separate
+
 $$ IO(🟦)_i → IO(🟦)_{i,0} + IO(🟦)_{i,1} ... , IO(🟦)_{i,n}$$
 
 6. To validate the fluid channel for the volume, ensure that the number of inlets and outlets are greater than or equal to two.
