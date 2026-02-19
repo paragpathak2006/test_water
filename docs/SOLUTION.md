@@ -49,19 +49,19 @@ Trimesh library was used for convexhull extraction and volumetric Booleans.
 ### Fluid boundary extraction
 Sample performance Report from baseline algorithm is given below
 
-| Δt(ms) |  Δt |
+| Baseline |  Δt  |
 |:------|:-------|
-| Baseline CHD | ⏰ 18.9536ms | 
-| Baseline mesh (∩,Δ) - vol#0 | ⏰223.4202ms | 
-| Baseline split - vol#0 | ⏰  2.4141ms | 
+| 📍 CHD | ⏰ 18.9536ms | 
+| 📍 mesh (∩,Δ) - vol#0 | ⏰223.4202ms | 
+| 📍 split - vol#0 | ⏰  2.4141ms | 
 
 Since the main performance bottleneck was found to be the mesh intersection  algorithmm Three different implementations were attempted for the extracting boundary surfaces were compared in terms of performance
 
-| Type |  Δt |
+| Type |  Δt  |
 |:------|:-------|
-| 1. Proximity query | ⏰ ~200ms | 
-| 2. Kdtree query | ⏰~15ms | 
-| 3. Hashmap implementation | ⏰  ~2-30ms | 
+| 📍 Proximity query | ⏰ ~200ms | 
+| 📍 Kdtree query | ⏰~15ms | 
+| 📍 Hashmap implementation | ⏰  ~2-30ms | 
 
 After extracting common faces, they were returned as lists. The uncommon faces were derived using Python’s numpy array difference function.
 
@@ -144,28 +144,28 @@ Event Times
 | 📍 split - vol#0  |Δt = ⏰  1.6844ms| -->
 
 
-| Baseline Algo          ||
+| Baseline Algo          | Δt  |
 |:------|:-------|
-| 📍 1️⃣ CHD                |  Δt = ⏰  14.3517ms| 
-| 📍 2️⃣ Mesh (∩,Δ) : 0    |  Δt = ⏰ 212.3191ms|
-| 📍 3️⃣ Split : 0         |  Δt = ⏰   2.1799ms|
-| 📍 Proximity Build     |  Δt = ⏰   0.0011ms|
+| 📍 1️⃣ CHD                |   ⏰  14.3517ms| 
+| 📍 2️⃣ Mesh (∩,Δ) : 0    |   ⏰ 212.3191ms|
+| 📍 3️⃣ Split : 0         |   ⏰   2.1799ms|
+| 📍 Proximity Build     |   ⏰   0.0011ms|
 
-| KDtree ||
+| KDtree | Δt  |
 |:------|:-------|
-| 📍 1️⃣ CHD                  |  Δt = ⏰  13.0823ms|
-| 📍 2️⃣ Mesh (∩,Δ) : 0      |  Δt = ⏰  34.2108ms|             
-| 📍 3️⃣ Split : 0           |  Δt = ⏰   2.3255ms|             
-| 📍 Proximity Build       |  Δt = ⏰   0.0009ms|             
-| 📍 KDTree Build          |  Δt = ⏰   0.2166ms|             
+| 📍 1️⃣ CHD                  |   ⏰  13.0823ms|
+| 📍 2️⃣ Mesh (∩,Δ) : 0      |   ⏰  34.2108ms|             
+| 📍 3️⃣ Split : 0           |   ⏰   2.3255ms|             
+| 📍 Proximity Build       |   ⏰   0.0009ms|             
+| 📍 KDTree Build          |   ⏰   0.2166ms|             
 
-| Hash Intersection Algo  ||
+| Hash Intersection Algo  | Δt |
 |:------|:-------|
-| 📍 1️⃣ CHD                    |  Δt = ⏰  11.3334ms|             
-| 📍 2️⃣ Mesh (∩,Δ) : 0        |  Δt = ⏰  38.8053ms|             
-| 📍 3️⃣ Split : 0             |  Δt = ⏰   1.2564ms|     
-| 📍 Proximity Build         |  Δt = ⏰   0.0021ms|             
-| 📍 Hash Build              |  Δt = ⏰  22.8052ms|             
+| 📍 1️⃣ CHD                    |  ⏰  11.3334ms|             
+| 📍 2️⃣ Mesh (∩,Δ) : 0        |  ⏰  38.8053ms|             
+| 📍 3️⃣ Split : 0             |  ⏰   1.2564ms|     
+| 📍 Proximity Build         |  ⏰   0.0021ms|             
+| 📍 Hash Build              |  ⏰  22.8052ms|             
 
 ### Github workflows for CI/CD
 GitHub workflows were enabled for CI/CD to ensure performance, correctness, linting and formatting stay optimal throughout the product development cycle.
