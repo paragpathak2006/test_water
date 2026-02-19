@@ -99,7 +99,7 @@ This function takes a self-difference of the mesh with its own convex hull, and 
 ```
 Convex Hull (A) - A → B 
 ```
-
+![alt text](docs/image.png)
 ### def [mesh surface intersection](https://github.com/paragpathak2006/test_water/blob/main/src/Geometry/Mesh_operations/intersection_difference/baseline.py)(Mesh A, Mesh B)
 This function is responsible for finding the intersection between two mesh surfaces, A and B. Output mesh C is a surface mesh that is the intersection between the two given meshes.
 ```
