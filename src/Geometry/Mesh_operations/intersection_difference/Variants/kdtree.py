@@ -54,9 +54,7 @@ def mesh_faces_intersection_difference(
     return mesh_C, mesh_D
 
 
-def recheck_intersection_proxQ(
-    mesh_A: Trimesh, proxB, uncommon_faces_A, tol=Tol.DIST
-):
+def recheck_intersection_proxQ(mesh_A: Trimesh, proxB, uncommon_faces_A, tol=Tol.DIST):
 
     transferred_faces = []
 

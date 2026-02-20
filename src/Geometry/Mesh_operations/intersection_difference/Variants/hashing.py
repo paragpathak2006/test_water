@@ -31,9 +31,7 @@ def mesh_faces_intersection_difference(
 
 
 # This function rechecks the faces that were classified as uncommon (i.e. not intersecting) to see if any of them are actually close enough to the other mesh (within a specified tolerance) to be considered as intersecting. This is necessary because the initial intersection query using the hash table may miss some faces due to its approximation, and the proximity query provides a more accurate distance measurement to ensure that we correctly classify faces as common or uncommon.
-def recheck_intersection_proxQ(
-    mesh_A: Trimesh, proxB, uncommon_faces_A, tol=Tol.DIST
-):
+def recheck_intersection_proxQ(mesh_A: Trimesh, proxB, uncommon_faces_A, tol=Tol.DIST):
 
     transferred_faces = []
 
