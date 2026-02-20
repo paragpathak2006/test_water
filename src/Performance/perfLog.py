@@ -23,9 +23,9 @@ class Algo:
     def SPLIT(i):
         return f"3️⃣. Split : {i}"
 
-    PROXIMITY_CONSTRUCT = "    Proximity Build"
-    TREE_CONSTRUCT = "    KDTree Build"
-    HASH_CONSTRUCT = "    Hash Build"
+    PROXIMITY_CONSTRUCT = "🔨 Proximity Build"
+    TREE_CONSTRUCT = "🔨 KDTree Build"
+    HASH_CONSTRUCT = "🔨 Hash Build"
 
 
 class PerfLog:
@@ -59,7 +59,7 @@ class PerfLog:
     def report():
         print(" Event Times ")
         # Print header
-        row_format = "{:<35} | {:<30} "
+        row_format = "{:<40} | {:<30} "
         print(row_format.format("Method Name ", "Time (ms)"))
         print("-" * 60)  # Separator
         for name, times in PerfLog._events.items():
@@ -78,6 +78,15 @@ class PerfLog:
                 else:
                     print(
                         row_format.format(
-                            f" 📍 {name:20} ", f" Δt = ⏰ {times * 1e3:8.4f}ms"
+                            f" 📍 {name:40} ", f" Δt = ⏰ {times_msg(times)}"
                         )
                     )
+
+
+def times_msg(times):
+    if times > 1e-3:
+        return f"{times * 1e3:8.0f} ms"
+    elif times > 1e-4:
+        return f"{times * 1e3:8.1f} ms"
+    else:
+        return f"{times * 1e6:8.1f} μs"

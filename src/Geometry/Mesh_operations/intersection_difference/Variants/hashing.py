@@ -1,11 +1,14 @@
 from trimesh import Trimesh
 import numpy as np
+from src.Geometry.Tolerence.mesh import Tolerence as Tol
 
 """ Mesh faces : A ∩ B = C """
 """ Mesh faces : A - B = D """
 
 
-def mesh_faces_intersection_difference(mesh_A: Trimesh, hashtableB, proxB, tol=1e-5):
+def mesh_faces_intersection_difference(
+    mesh_A: Trimesh, hashtableB, proxB, tol=Tol.DIST
+):
     # Find common faces (C) and uncommon faces (D) of mesh A with respect to mesh B using the hash table for an initial intersection query
     common_faces = intersect_faces(mesh_A, hashtableB)
     uncommon_faces = np.setdiff1d(range(len(mesh_A.faces)), common_faces)
@@ -28,7 +31,9 @@ def mesh_faces_intersection_difference(mesh_A: Trimesh, hashtableB, proxB, tol=1
 
 
 # This function rechecks the faces that were classified as uncommon (i.e. not intersecting) to see if any of them are actually close enough to the other mesh (within a specified tolerance) to be considered as intersecting. This is necessary because the initial intersection query using the hash table may miss some faces due to its approximation, and the proximity query provides a more accurate distance measurement to ensure that we correctly classify faces as common or uncommon.
-def recheck_intersection_proxQ(mesh_A: Trimesh, proxB, uncommon_faces_A, tol=1e-5):
+def recheck_intersection_proxQ(
+    mesh_A: Trimesh, proxB, uncommon_faces_A, tol=Tol.DIST
+):
 
     transferred_faces = []
 

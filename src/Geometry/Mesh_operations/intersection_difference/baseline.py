@@ -1,6 +1,7 @@
 import trimesh
 from trimesh import Trimesh
 import numpy as np
+from src.Geometry.Tolerence.mesh import Tolerence as Tol
 
 """ Mesh faces : A ∩ B = C """
 """ Mesh faces : A - B = D """
@@ -14,7 +15,7 @@ import numpy as np
 
 
 def mesh_faces_intersection_difference(
-    mesh_A: Trimesh, prox_B: trimesh.proximity.ProximityQuery, tol=1e-5
+    mesh_A: Trimesh, prox_B: trimesh.proximity.ProximityQuery, tol=Tol.DIST
 ):
 
     # List to store indices of faces in A that are close to B (i.e. common surface)

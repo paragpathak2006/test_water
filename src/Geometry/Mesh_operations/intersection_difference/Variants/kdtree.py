@@ -1,12 +1,13 @@
 from trimesh import Trimesh
 import numpy as np
+from src.Geometry.Tolerence.mesh import Tolerence as Tol
 
 """ Mesh faces : A ∩ B = C """
 """ Mesh faces : A - B = D """
 
 
 def mesh_faces_intersection_difference(
-    mesh_A: Trimesh, mesh_B: Trimesh, treeB, proxB, tol=1e-5
+    mesh_A: Trimesh, mesh_B: Trimesh, treeB, proxB, tol=Tol.DIST
 ):
 
     centA = mesh_A.triangles_center
@@ -14,7 +15,9 @@ def mesh_faces_intersection_difference(
     normA = mesh_A.face_normals
     normB = mesh_B.face_normals
 
-    tol_dot = 1e-7  # tolerance for dot product to consider normals as parallel (i.e. faces are coplanar)
+    tol_dot = (
+        Tol.DOT
+    )  # tolerance for dot product to consider normals as parallel (i.e. faces are coplanar)
 
     common_faces = []
 
@@ -51,7 +54,9 @@ def mesh_faces_intersection_difference(
     return mesh_C, mesh_D
 
 
-def recheck_intersection_proxQ(mesh_A: Trimesh, proxB, uncommon_faces_A, tol=1e-5):
+def recheck_intersection_proxQ(
+    mesh_A: Trimesh, proxB, uncommon_faces_A, tol=Tol.DIST
+):
 
     transferred_faces = []
 

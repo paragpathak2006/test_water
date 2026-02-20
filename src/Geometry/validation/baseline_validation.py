@@ -1,4 +1,5 @@
 from trimesh import Trimesh
+from src.Geometry.Tolerence.mesh import Tolerence as Tol
 
 
 def baseline_validation_check(mesh: Trimesh):
@@ -10,7 +11,7 @@ def baseline_validation_check(mesh: Trimesh):
         )
         print("Volume of mesh : ", mesh.volume)
 
-        if abs(mesh.volume) < 1e-6:
+        if abs(mesh.volume) < Tol.VOLUME:
             print(
                 "⚠️ However, the volume of the mesh is very small (close to zero). This may indicate a degenerate or nearly flat mesh. Please check the mesh for issues such as coplanar faces or very thin geometry."
             )
