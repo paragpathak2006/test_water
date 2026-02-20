@@ -5,16 +5,11 @@ from src.Fluid_region_extraction_algo.test import test_fluid_extraction_algo
 
 from src.Performance.perfLog import PerfLog, Algo, Variant
 
-from tests.io_path import OUT_DIR as benchmark_OUT_DIR
-
-from src.Fluid_region_extraction_algo.baseline.io_path import (
-    OUT_DIR as baseline_OUT_DIR,
-)
-from src.Fluid_region_extraction_algo.Variant.kdtree.io_path import (
-    OUT_DIR as kdtree_OUT_DIR,
-)
-from src.Fluid_region_extraction_algo.Variant.hashing.io_path import (
-    OUT_DIR as hash_OUT_DIR,
+from data.io_path import (
+    BASELINE_OUT_DIR,
+    HASHING_OUT_DIR,
+    KDTREE_OUT_DIR,
+    BENCHMARK_INPUT_DIR,
 )
 
 
@@ -33,7 +28,7 @@ class Run_Unit_Tests(unittest.TestCase):
     @classmethod
     def pre_cleanup_output_dir(cls):
         print("Pre-cleaning output directories...")
-        pre_cleanup_outputs([baseline_OUT_DIR, hash_OUT_DIR, kdtree_OUT_DIR])
+        pre_cleanup_outputs([BASELINE_OUT_DIR, HASHING_OUT_DIR, KDTREE_OUT_DIR])
         print("Pre-cleanup done.\n\n")
 
     def test_baseline_correctness(self):
@@ -44,7 +39,7 @@ class Run_Unit_Tests(unittest.TestCase):
                 "❌ Baseline convex hull difference algorithm failed. Aborting test."
             )
 
-        files_compare(self, benchmark_OUT_DIR, baseline_OUT_DIR)
+        files_compare(self, BENCHMARK_INPUT_DIR, BASELINE_OUT_DIR)
         print("✅ Correctness test is OK\n\n")
         print("────────────────────────────────────────\n\n")
 
@@ -79,7 +74,7 @@ class Run_Unit_Tests(unittest.TestCase):
                 "❌ KDtree convex hull difference algorithm failed. Aborting test."
             )
 
-        files_compare(self, benchmark_OUT_DIR, kdtree_OUT_DIR)
+        files_compare(self, BENCHMARK_INPUT_DIR, KDTREE_OUT_DIR)
 
         print("✅ Correctness test is OK\n\n")
         print("────────────────────────────────────────\n\n")
@@ -113,7 +108,7 @@ class Run_Unit_Tests(unittest.TestCase):
         if test_fluid_extraction_algo(Variant.HASH_INTERSECTION) is None:
             self.fail("❌ Hash intersection algorithm failed. Aborting test.")
 
-        files_compare(self, benchmark_OUT_DIR, hash_OUT_DIR)
+        files_compare(self, BENCHMARK_INPUT_DIR, HASHING_OUT_DIR)
 
         print("✅ Correctness test is OK\n\n")
         print("────────────────────────────────────────\n\n")

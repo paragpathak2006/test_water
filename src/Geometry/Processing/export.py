@@ -1,13 +1,5 @@
 from src.Performance.perfLog import Variant
-from src.Fluid_region_extraction_algo.baseline.io_path import (
-    OUT_DIR as BASELINE_OUT_DIR,
-)
-from src.Fluid_region_extraction_algo.Variant.kdtree.io_path import (
-    OUT_DIR as KDTREE_OUT_DIR,
-)
-from src.Fluid_region_extraction_algo.Variant.hashing.io_path import (
-    OUT_DIR as HASHING_OUT_DIR,
-)
+from data.io_path import BASELINE_OUT_DIR, HASHING_OUT_DIR, KDTREE_OUT_DIR
 
 
 def export_fluid_volumes_and_boundaries(
