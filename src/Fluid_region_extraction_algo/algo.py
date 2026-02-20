@@ -107,7 +107,6 @@ def fluid_extraction_algo(solid_volume: Trimesh, variant=Variant.BASELINE):
                     variant(Algo.MESH_INTERSECTION_DIFFERENCE(i)),
                     mesh_faces_intersection_difference_hashing,
                     fluid_volumes[i],
-                    solid_volume,
                     table_solid_volume,
                     prox_solid_volume,
                 )

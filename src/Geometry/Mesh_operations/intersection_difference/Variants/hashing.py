@@ -5,12 +5,9 @@ import numpy as np
 """ Mesh faces : A - B = D """
 
 
-def mesh_faces_intersection_difference(
-    mesh_A: Trimesh, mesh_B: Trimesh, hashtableB, proxB, tol=1e-5
-):
-
-    common_faces = intersect_faces(mesh_A, mesh_B, hashtableB)
-    # remove common faces from A to get difference mesh C
+def mesh_faces_intersection_difference(mesh_A: Trimesh, hashtableB, proxB, tol=1e-5):
+    # Find common faces (C) and uncommon faces (D) of mesh A with respect to mesh B using the hash table for an initial intersection query
+    common_faces = intersect_faces(mesh_A, hashtableB)
     uncommon_faces = np.setdiff1d(range(len(mesh_A.faces)), common_faces)
 
     # transfer faces from uncommon to common if they are actually close to B (i.e. within tol) but were missed by the KDTree query due to its approximation, by rechecking the distance of uncommon faces to B using the proximity query
@@ -30,6 +27,7 @@ def mesh_faces_intersection_difference(
     return mesh_C, mesh_D
 
 
+# This function rechecks the faces that were classified as uncommon (i.e. not intersecting) to see if any of them are actually close enough to the other mesh (within a specified tolerance) to be considered as intersecting. This is necessary because the initial intersection query using the hash table may miss some faces due to its approximation, and the proximity query provides a more accurate distance measurement to ensure that we correctly classify faces as common or uncommon.
 def recheck_intersection_proxQ(mesh_A: Trimesh, proxB, uncommon_faces_A, tol=1e-5):
 
     transferred_faces = []
@@ -41,18 +39,19 @@ def recheck_intersection_proxQ(mesh_A: Trimesh, proxB, uncommon_faces_A, tol=1e-
         if dist <= tol:
             transferred_faces.append(iA)
             print(
-                f"Face {iA} transferred from uncommon to common. Distance to B = {dist}"
+                f"⚠️ Face {iA} transferred from uncommon to common. Distance to B = {dist}"
             )
 
     return transferred_faces
 
 
-def intersect_faces(meshA: Trimesh, meshB: Trimesh, hashtableB):
+# Intersect faces of mesh A with the hash table of mesh B to find common faces. This function checks the centroids of the faces in mesh A against the quantized keys in the hash table of mesh B to identify which faces are likely to be intersecting or close to faces in mesh B, which is a crucial step in the intersection-difference algorithm for mesh processing.
+def intersect_faces(meshA: Trimesh, hashtableB):
     common = []
 
-    for i, f in enumerate(meshA.faces):
-        verts = meshA.vertices[f]
-        key = face_key(verts)
+    centroids = meshA.triangles_center
+    for i, centroid in enumerate(centroids):
+        key = quantize(centroid)
 
         if key in hashtableB:
             common.append(i)
@@ -60,20 +59,22 @@ def intersect_faces(meshA: Trimesh, meshB: Trimesh, hashtableB):
     return common
 
 
+# Build a hash table for the faces of a mesh based on the quantized centroids of the faces. This allows for efficient lookup of faces in another mesh that are close to these centroids, which is useful for intersection queries in the mesh processing algorithms.
 def build_face_hash(mesh: Trimesh):
     table = set()
 
-    for f in mesh.faces:
-        verts = mesh.vertices[f]
-        table.add(face_key(verts))
+    centroids = mesh.triangles_center
+    for centroid in centroids:
+        table.add(quantize(centroid))
 
     return table
 
 
 def face_key(vertices):
-    q = [quantize(v) for v in vertices]
-    return tuple(sorted(q))
+    keys = [quantize(v) for v in vertices]
+    return tuple(sorted(keys))
 
 
+# Quantization function to convert 3D coordinates to discrete keys for hashing, with a specified scale factor to control the precision of the quantization. This helps in efficiently identifying nearby faces in the mesh for intersection queries while being robust to small numerical differences.
 def quantize(v, scale=1e6):
     return tuple(np.round(v * scale).astype(int))

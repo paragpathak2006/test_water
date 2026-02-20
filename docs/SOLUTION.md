@@ -149,28 +149,31 @@ Event Times
 | 📍 split - vol#0  |Δt = ⏰  1.6844ms| -->
 
 
-| Baseline Algo          | Δt  |
+| Baseline Algo          | Δt (ms) |
 |:------|:-------|
-| 📍 1️⃣ CHD                |   ⏰  14.3517ms| 
-| 📍 2️⃣ Mesh (∩,Δ) : 0    |   ⏰ 212.3191ms|
-| 📍 3️⃣ Split : 0         |   ⏰   2.1799ms|
-| 📍 Proximity Build     |   ⏰   0.0011ms|
+| 📍 1️⃣ CHD                |   ⏰  14.3| 
+| 📍 2️⃣ Mesh (∩,Δ) : 0    |   ⏰ 212.3|
+| 📍 3️⃣ Split : 0         |   ⏰   2.2|
+| 📍 Proximity Build     |   ⏰   1.1e-3|
 
-| KDtree | Δt  |
+| KDtree | Δt (ms)  |
 |:------|:-------|
-| 📍 1️⃣ CHD                  |   ⏰  13.0823ms|
-| 📍 2️⃣ Mesh (∩,Δ) : 0      |   ⏰  34.2108ms|             
-| 📍 3️⃣ Split : 0           |   ⏰   2.3255ms|             
-| 📍 Proximity Build       |   ⏰   0.0009ms|             
-| 📍 KDTree Build          |   ⏰   0.2166ms|             
+| 📍 1️⃣ CHD                  |   ⏰  13.1|
+| 📍 2️⃣ Mesh (∩,Δ) : 0      |   ⏰  34.2|             
+| 📍 3️⃣ Split : 0           |   ⏰   2.3|             
+| 📍 Proximity Build       |   ⏰   1e-3|             
+| 📍 KDTree Build          |   ⏰   0.2|             
 
-| Hash Intersection Algo  | Δt |
+| Hash Intersection Algo  | Δt (ms) |
 |:------|:-------|
-| 📍 1️⃣ CHD                    |  ⏰  11.3334ms|             
-| 📍 2️⃣ Mesh (∩,Δ) : 0        |  ⏰  38.8053ms|             
-| 📍 3️⃣ Split : 0             |  ⏰   1.2564ms|     
-| 📍 Proximity Build         |  ⏰   0.0021ms|             
-| 📍 Hash Build              |  ⏰  22.8052ms|             
+| 📍 1️⃣ CHD                    |  ⏰  11.3  |             
+| 📍 2️⃣ Mesh (∩,Δ) : 0  Vertices       |  ⏰  38.8|             
+| 📍 2️⃣ Mesh (∩,Δ) : 0  Centroidal       |  ⏰  10.6|             
+| 📍 3️⃣ Split : 0             |  ⏰   1.2|     
+| 📍 Proximity Build          |  ⏰   2.1e-3|             
+| 📍 Hash table Build : Vertices               |  ⏰  22.8|             
+| 📍 Hash table Build : Centroidal              |  ⏰  1.5 |             
+
 
 ### Github workflows for CI/CD
 GitHub workflows were enabled for CI/CD to ensure performance, correctness, linting and formatting stay optimal throughout the product development cycle.
