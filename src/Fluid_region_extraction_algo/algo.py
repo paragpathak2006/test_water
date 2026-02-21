@@ -73,32 +73,25 @@ class Fluid_region_extraction_algo:
         cls.fluid_inlets_outlets_all.append(IOs)
         # capturing the list of inlet-outlet boundary meshes
 
-    convex_hull_difference_failed_msg = "❌ Convex hull difference algorithm failed or Solid is already convex.No fluid volumes extracted."
-    fluid_volume_path_validation_success_msg = "\n✅ Multiple fluid inlets-outlets detected. Fluid volume represents a valid embedded path."
-    no_embedded_fluid_volume_msg = "\n❌ No valid embedded fluid volumes with atleast 2 open boundaries (i.e. inlet and outlet) detected.❌"
-
     @classmethod
     def number_of_fluid_volumes_msg(cls, i, ios):
         return (
             f"For volume#{i} : Number of fluid inlet and outlet boundaries : {len(ios)}"
         )
 
+    convex_hull_difference_failed_msg = "❌ Convex hull difference algorithm failed or Solid is already convex.No fluid volumes extracted."
+    fluid_volume_path_validation_success_msg = "\n✅ Multiple fluid inlets-outlets detected. Fluid volume represents a valid embedded path."
+    no_embedded_fluid_volume_msg = "\n❌ No valid embedded fluid volumes with atleast 2 open boundaries (i.e. inlet and outlet) detected.❌"
+
+    # result list to store combined inlet-outlet boundary meshes for each fluid volume
     embedded_volumes = []
     fluid_walls = []  # result list to store fluid wall meshes
-    fluid_inlets_outlets_all_combined = (
-        []
-    )  # result list to store combined inlet-outlet boundary meshes for each fluid volume
-    fluid_inlets_outlets_all = (
-        []
-    )  # result list to store lists of inlet-outlet boundary meshes for each fluid volume
+    fluid_inlets_outlets_all_combined = []
+    fluid_inlets_outlets_all = []
 
     @classmethod
     def cleanup(cls):
         cls.embedded_volumes = []
         cls.fluid_walls = []  # result list to store fluid wall meshes
-        cls.fluid_inlets_outlets_all_combined = (
-            []
-        )  # result list to store combined inlet-outlet boundary meshes for each fluid volume
-        cls.fluid_inlets_outlets_all = (
-            []
-        )  # result list to store lists of inlet-outlet boundary meshes for each fluid volume
+        cls.fluid_inlets_outlets_all_combined = []
+        cls.fluid_inlets_outlets_all = []
