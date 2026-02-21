@@ -2,18 +2,33 @@ from trimesh import Trimesh
 from src.Performance.perfLog import PerfLog
 from src.Geometry.Processing.pre import preprocess
 from src.Geometry.Processing.post import postprocess
-from src.Geometry.Processing.export import export_fluid_volumes_and_boundaries_all
+from src.Geometry.Processing.export import export_all
 
 from src.Fluid_region_extraction_algo.selector import (
-    convexhull_difference_selector,
-    mesh_intersection_difference_selector,
-    proximity_selector,
-    split_selector,
-    tree_or_table_selector,
+    convexhull_difference_selector as ConvHull_diff,
+    mesh_intersection_difference_selector as int_diff,
+    proximity_selector as prox,
+    split_selector as split,
+    tree_or_table_selector as tree_or_table,
 )
 
 
 class Fluid_region_extraction_algo:
+
+    @classmethod
+    def fluid_extraction_algo_summary(cls, solid: Trimesh, variant):
+
+        prox_solid = prox(variant, solid)
+        tree_table = tree_or_table(variant, solid)
+        fluids = ConvHull_diff(variant, solid)
+
+        for i, fluid in enumerate(fluids):
+            wall, IOs_all = int_diff(variant, i, fluid, solid, prox_solid, tree_table)
+            IOs = split(variant, i, IOs_all)
+            if len(IOs) >= 2:
+                cls.add(fluid, wall, IOs_all, IOs)
+
+        return cls.embedded, cls.walls, cls.IOs
 
     @classmethod
     def fluid_extraction_algo(cls, solid: Trimesh, variant):
@@ -21,16 +36,16 @@ class Fluid_region_extraction_algo:
         if preprocess(solid) is None:
             return None
 
-        fluids = convexhull_difference_selector(variant, solid)
+        # compute proximity query for solid volume to be used in intersection-difference method for extracting fluid walls and inlet-outlet boundaries
+        prox_solid = prox(variant, solid)
+        tree_table = tree_or_table(variant, solid)
+
+        fluids = ConvHull_diff(variant, solid)
         if fluids is None:
             print(cls.convex_hull_difference_failed_msg)
             return None
 
         print("\n✅ Number of fluid volumes : ", len(fluids))
-
-        # compute proximity query for solid volume to be used in intersection-difference method for extracting fluid walls and inlet-outlet boundaries
-        prox_solid = proximity_selector(variant, solid)
-        tree_or_table = tree_or_table_selector(variant, solid)
 
         for i, fluid in enumerate(fluids):
             print("\nExtracting fluid walls and inlet-outlet boundaries...")
@@ -39,12 +54,9 @@ class Fluid_region_extraction_algo:
             print("surface area = ", fluid.area)
 
             # extract fluid wall and inlet-outlet boundaries using intersection-difference method
-            wall, IOs_combined = mesh_intersection_difference_selector(
-                variant, i, fluid, solid, prox_solid, tree_or_table
-            )
-
-            IOs = split_selector(variant, i, IOs_combined)
-            print(cls.number_of_fluid_volumes_msg(i, IOs))
+            wall, IOs_all = int_diff(variant, i, fluid, solid, prox_solid, tree_table)
+            IOs = split(variant, i, IOs_all)
+            print(cls.num_of_fluids_msg(i, IOs))
 
             if len(IOs) >= 2:
                 # Validation check for output fluid volume mesh
@@ -53,28 +65,28 @@ class Fluid_region_extraction_algo:
 
                 print(cls.fluid_volume_path_validation_success_msg)
                 # capturing the list of inlet-outlet boundary meshes
-                cls.add_to_collection(fluid, wall, IOs_combined, IOs)
+                cls.add(fluid, wall, IOs_all, IOs)
 
         PerfLog.line()
 
-        if len(cls.embedded_volumes) == 0:
+        if len(cls.embedded) == 0:
             print(cls.no_embedded_fluid_volume_msg)
             return None
 
-        export_fluid_volumes_and_boundaries_all(cls, variant)
-        return cls.embedded_volumes, cls.fluid_walls, cls.fluid_inlets_outlets_all
+        export_all(cls, variant)
+        return cls.embedded, cls.walls, cls.IOs
 
     @classmethod
-    def add_to_collection(cls, fluid, wall, IOs_combined, IOs):
+    def add(cls, fluid, wall, IOs_combined, IOs):
         # capturing the fluid volume mesh that form a valid path with atleast 2 open boundaries (i.e. inlet and outlet)
-        cls.embedded_volumes.append(fluid)
-        cls.fluid_walls.append(wall)  # capturing the fluid wall mesh
-        cls.fluid_inlets_outlets_all_combined.append(IOs_combined)
-        cls.fluid_inlets_outlets_all.append(IOs)
+        cls.embedded.append(fluid)
+        cls.walls.append(wall)  # capturing the fluid wall mesh
+        cls.IOs_all.append(IOs_combined)
+        cls.IOs.append(IOs)
         # capturing the list of inlet-outlet boundary meshes
 
     @classmethod
-    def number_of_fluid_volumes_msg(cls, i, ios):
+    def num_of_fluids_msg(cls, i, ios):
         return (
             f"For volume#{i} : Number of fluid inlet and outlet boundaries : {len(ios)}"
         )
@@ -84,14 +96,14 @@ class Fluid_region_extraction_algo:
     no_embedded_fluid_volume_msg = "\n❌ No valid embedded fluid volumes with atleast 2 open boundaries (i.e. inlet and outlet) detected.❌"
 
     # result list to store combined inlet-outlet boundary meshes for each fluid volume
-    embedded_volumes = []
-    fluid_walls = []  # result list to store fluid wall meshes
-    fluid_inlets_outlets_all_combined = []
-    fluid_inlets_outlets_all = []
+    embedded = []
+    walls = []  # result list to store fluid wall meshes
+    IOs_all = []
+    IOs = []
 
     @classmethod
     def cleanup(cls):
-        cls.embedded_volumes = []
-        cls.fluid_walls = []  # result list to store fluid wall meshes
-        cls.fluid_inlets_outlets_all_combined = []
-        cls.fluid_inlets_outlets_all = []
+        cls.embedded = []
+        cls.walls = []  # result list to store fluid wall meshes
+        cls.IOs_all = []
+        cls.IOs = []

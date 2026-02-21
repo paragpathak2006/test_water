@@ -2,38 +2,27 @@ from src.Performance.perfLog import Variant
 from data.io_path import BASELINE_OUT_DIR, HASHING_OUT_DIR, KDTREE_OUT_DIR
 
 
-def export_fluid_volumes_and_boundaries_all(cls, variant):
-    for i, (
-        fluid_volume,
-        fluid_wall,
-        fluid_inlets_outlets_combined,
-        fluid_inlets_outlets,
-    ) in enumerate(
+def export_all(cls, variant):
+
+    for i, (fluid, wall, IOs_all, IOs) in enumerate(
         zip(
-            cls.embedded_volumes,
-            cls.fluid_walls,
-            cls.fluid_inlets_outlets_all_combined,
-            cls.fluid_inlets_outlets_all,
+            cls.embedded,
+            cls.walls,
+            cls.IOs_all,
+            cls.IOs,
         )
     ):
-        export_fluid_volumes_and_boundaries(
+        export(
             variant,
             i,
-            fluid_volume,
-            fluid_wall,
-            fluid_inlets_outlets_combined,
-            fluid_inlets_outlets,
+            fluid,
+            wall,
+            IOs_all,
+            IOs,
         )
 
 
-def export_fluid_volumes_and_boundaries(
-    variant,
-    i,
-    fluid_volume,
-    fluid_wall,
-    fluid_inlets_outlets_combined,
-    fluid_inlets_outlets,
-):
+def export(variant, i, fluid, wall, IOs_all, IOs):
 
     match variant:
         case Variant.BASELINE:
@@ -45,17 +34,15 @@ def export_fluid_volumes_and_boundaries(
 
     print(f"\n📁 Exporting file : fluid-volume-{i} ...")
 
-    fluid_volume.export(OUT_DIR / f"1. fluid-volume-{i}.stl")
+    fluid.export(OUT_DIR / f"1. fluid-volume-{i}.stl")
 
     # export each inlet-outlet boundary separately
     print(f"📁 Exporting file : fluid-wall-{i} ...")
-    fluid_wall.export(OUT_DIR / f"2. fluid_wall-{i}.stl")
+    wall.export(OUT_DIR / f"2. fluid_wall-{i}.stl")
 
     print(f"📁 Exporting file : fluid-inlets-outlets-combined-{i} ...")
-    fluid_inlets_outlets_combined.export(
-        OUT_DIR / f"3. fluid_inlets-outlets-combined-{i}.stl"
-    )
+    IOs_all.export(OUT_DIR / f"3. fluid_inlets-outlets-combined-{i}.stl")
 
-    for ii, fluid_inlet_outlet in enumerate(fluid_inlets_outlets):
+    for ii, fluid_inlet_outlet in enumerate(IOs):
         print(f"📁 Exporting file : fluid-inlet-outlet-{i}-{ii} ...")
         fluid_inlet_outlet.export(OUT_DIR / f"4. fluid-inlet-outlet-{i}-{ii}.stl")
