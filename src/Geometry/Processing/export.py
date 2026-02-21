@@ -2,6 +2,30 @@ from src.Performance.perfLog import Variant
 from data.io_path import BASELINE_OUT_DIR, HASHING_OUT_DIR, KDTREE_OUT_DIR
 
 
+def export_fluid_volumes_and_boundaries_all(cls, variant):
+    for i, (
+        fluid_volume,
+        fluid_wall,
+        fluid_inlets_outlets_combined,
+        fluid_inlets_outlets,
+    ) in enumerate(
+        zip(
+            cls.embedded_volumes,
+            cls.fluid_walls,
+            cls.fluid_inlets_outlets_all_combined,
+            cls.fluid_inlets_outlets_all,
+        )
+    ):
+        export_fluid_volumes_and_boundaries(
+            variant,
+            i,
+            fluid_volume,
+            fluid_wall,
+            fluid_inlets_outlets_combined,
+            fluid_inlets_outlets,
+        )
+
+
 def export_fluid_volumes_and_boundaries(
     variant,
     i,

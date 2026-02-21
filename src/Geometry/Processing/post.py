@@ -2,7 +2,7 @@ from ..healing.baseline_healing import baseline_heal
 from ..validation.baseline_validation import baseline_validation_check
 
 
-def postprocess_fluid_volume_for_convexhull_difference(fluid_volume):
+def postprocess(fluid_volume):
 
     print("\nPostprocessing fluid volume mesh for convex hull difference algorithm...")
 

@@ -2,7 +2,7 @@ from ..healing.baseline_healing import baseline_heal
 from ..validation.baseline_validation import baseline_validation_check
 
 
-def preprocess_solid_volume_for_convexhull_difference(solid_volume):
+def preprocess(solid_volume):
     print("\nPreprocessing solid volume mesh for convex hull difference algorithm...")
 
     validation_successfull_msg = "✅ Input solid volume mesh is valid and represents a watertight volume. No healing needed."
