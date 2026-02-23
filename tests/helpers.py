@@ -6,12 +6,14 @@ from pathlib import Path
 
 # Helper function to get list of files in a directory
 def get_files_list(DIR):
+    print("─" * 50)
     print(f"\nGetting list of files in directory : {DIR}")
     files = [p.name for p in Path(DIR).iterdir() if p.is_file()]
 
     print("files found : ")
     for i, file in enumerate(files):
         print(f"📁 {i}: {file}")
+    print("─" * 50)
 
     return files
 
@@ -19,6 +21,7 @@ def get_files_list(DIR):
 # Helper function to compare files in two directories
 def files_compare(tester, DIR1, DIR2):
 
+    print("─" * 50)
     files = get_files_list(DIR1)
 
     for file in files:
@@ -35,6 +38,7 @@ def files_compare(tester, DIR1, DIR2):
             np.allclose(mesh1.vertices, mesh2.vertices),
             f"❌ Vertex arrays are not close for file {file}",
         )
+    print("─" * 50)
 
 
 # Helper function to pre-cleanup output directories before running tests to avoid confusion with old files from previous runs
@@ -44,6 +48,7 @@ def pre_cleanup_outputs(DIRs):
 
 
 def pre_cleanup_output(DIR):
+    print("─" * 50)
     print(f"\n Pre-cleaning up output directory : {DIR} ...\n")
     files = get_files_list(DIR)
     for name in files:
@@ -54,3 +59,4 @@ def pre_cleanup_output(DIR):
         if os.path.exists(file):
             print(f"🧹 Removing file 📂 {name} 🗑️")
             os.remove(file)
+    print("─" * 50)

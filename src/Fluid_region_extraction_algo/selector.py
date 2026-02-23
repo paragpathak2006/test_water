@@ -3,6 +3,7 @@ import trimesh
 from trimesh import Trimesh
 from typing import Union
 
+from src.Logging.log import log_tree
 from src.Geometry.Convexhull_operations.convex_hull_difference.baseline import (
     convex_hull_difference,
 )
@@ -19,6 +20,7 @@ from src.Geometry.Mesh_operations.intersection_difference.Variants.hashing impor
 )
 
 
+@log_tree
 def mesh_intersection_difference_selector(
     variant,
     i,
@@ -28,6 +30,7 @@ def mesh_intersection_difference_selector(
     treeorTableB: Union[dict, spatial.KDTree],
 ):
 
+    print("─" * 50)
     match variant:
         case Variant.BASELINE:
             return PerfLog.log(
@@ -55,8 +58,9 @@ def mesh_intersection_difference_selector(
             )
 
 
+@log_tree
 def tree_or_table_selector(variant, solid_volume: Trimesh):
-
+    print("─" * 50)
     match variant:
         case Variant.KDTREE:
             return PerfLog.log(
@@ -72,8 +76,10 @@ def tree_or_table_selector(variant, solid_volume: Trimesh):
     return None
 
 
+@log_tree
 def proximity_selector(variant, solid_volume: Trimesh):
 
+    print("─" * 50)
     return PerfLog.log(
         variant(Algo.PROXIMITY_CONSTRUCT),
         trimesh.proximity.ProximityQuery,
@@ -81,6 +87,7 @@ def proximity_selector(variant, solid_volume: Trimesh):
     )
 
 
+@log_tree
 def convexhull_difference_selector(variant, solid_volume: Trimesh):
 
     return PerfLog.log(
@@ -90,8 +97,10 @@ def convexhull_difference_selector(variant, solid_volume: Trimesh):
     )
 
 
+@log_tree
 def split_selector(variant, i, mesh: Trimesh):
 
+    print("─" * 50)
     return PerfLog.log(
         variant(Algo.SPLIT(i)),
         mesh.split,

@@ -3,7 +3,7 @@ from data.io_path import BASELINE_OUT_DIR, HASHING_OUT_DIR, KDTREE_OUT_DIR
 
 
 def export_all(cls, variant):
-
+    print("─" * 50)
     for i, (fluid, wall, IOs_all, IOs) in enumerate(
         zip(
             cls.embedded,
@@ -23,7 +23,6 @@ def export_all(cls, variant):
 
 
 def export(variant, i, fluid, wall, IOs_all, IOs):
-
     match variant:
         case Variant.BASELINE:
             OUT_DIR = BASELINE_OUT_DIR

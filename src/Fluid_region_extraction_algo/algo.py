@@ -1,4 +1,5 @@
 from trimesh import Trimesh
+from src.Logging.log import Logger, log_tree
 from src.Performance.perfLog import PerfLog
 from src.Geometry.Processing.pre import preprocess
 from src.Geometry.Processing.post import postprocess
@@ -31,6 +32,7 @@ class Fluid_region_extraction_algo:
         return cls.embedded, cls.walls, cls.IOs
 
     @classmethod
+    @log_tree
     def fluid_extraction_algo(cls, solid: Trimesh, variant):
 
         if preprocess(solid) is None:
@@ -41,17 +43,29 @@ class Fluid_region_extraction_algo:
         tree_table = tree_or_table(variant, solid)
 
         fluids = ConvHull_diff(variant, solid)
+
         if fluids is None:
             print(cls.convex_hull_difference_failed_msg)
             return None
 
         print("\n✅ Number of fluid volumes : ", len(fluids))
+        # Logger.log("num_of_fluid_volumes", len(fluids))
 
         for i, fluid in enumerate(fluids):
+
+            Logger.log("fluid_volume_index", i)
+            Logger.log("fluid_volume_volume", fluid.volume)
+            Logger.log("fluid_volume_surface_area", fluid.area)
+
+            print("─" * 50)
             print("\nExtracting fluid walls and inlet-outlet boundaries...")
             print("\nProcessing fluid volume#", i, " ...")
+
+            print("─" * 50)
+
             print("\nVolume = ", fluid.volume)
             print("surface area = ", fluid.area)
+            print("─" * 50)
 
             # extract fluid wall and inlet-outlet boundaries using intersection-difference method
             wall, IOs_all = int_diff(variant, i, fluid, solid, prox_solid, tree_table)
@@ -60,10 +74,12 @@ class Fluid_region_extraction_algo:
 
             if len(IOs) >= 2:
                 # Validation check for output fluid volume mesh
+
                 if postprocess(fluid) is None:
                     return None
 
                 print(cls.fluid_volume_path_validation_success_msg)
+                # Logger.log("fluid_volume_path_validation", "success")
                 # capturing the list of inlet-outlet boundary meshes
                 cls.add(fluid, wall, IOs_all, IOs)
 
@@ -87,6 +103,7 @@ class Fluid_region_extraction_algo:
 
     @classmethod
     def num_of_fluids_msg(cls, i, ios):
+        # Logger.log("num_of_fluid_inlets_outlets", len(ios))
         return (
             f"For volume#{i} : Number of fluid inlet and outlet boundaries : {len(ios)}"
         )

@@ -3,6 +3,7 @@ from ..validation.baseline_validation import baseline_validation_check
 
 
 def preprocess(solid_volume):
+    print("─" * 50)
     print("\nPreprocessing solid volume mesh for convex hull difference algorithm...")
 
     validation_successfull_msg = "✅ Input solid volume mesh is valid and represents a watertight volume. No healing needed."
@@ -16,11 +17,12 @@ def preprocess(solid_volume):
 
     if baseline_validation_check(solid_volume):
         print(validation_successfull_msg)
+        print("─" * 50)
         return True
 
     print(validation_not_successfull_msg)
     baseline_heal(solid_volume)
-
+    print("─" * 50)
     if baseline_validation_check(solid_volume):
         print(healing_successfull_msg)
         return True

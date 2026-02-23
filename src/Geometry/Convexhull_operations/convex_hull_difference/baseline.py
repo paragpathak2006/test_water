@@ -3,7 +3,6 @@ from trimesh import Trimesh
 
 
 def convex_hull_difference(mesh: Trimesh):
-
     # messages
     mesh_convex_msg = "❌ Mesh is already convex. No concave regions to extract."
     convex_hull_extraction_failed_msg = (
@@ -34,10 +33,12 @@ def convex_hull_difference(mesh: Trimesh):
 
     elif isinstance(concave_regions, Trimesh):
         print(single_concave_region_msg)
+        print("─" * 50)
         return [concave_regions]
 
     elif isinstance(concave_regions, trimesh.Scene):
         print(multiple_concave_regions_msg, len(concave_regions.geometry))
+        print("─" * 50)
         return list(concave_regions.geometry.values())
 
     return concave_regions

@@ -17,6 +17,7 @@ def postprocess(fluid_volume):
 
     if baseline_validation_check(fluid_volume):
         print(validation_successfull_msg)
+        print("─" * 50)
         return True
 
     print(validation_not_successfull_msg)
@@ -24,7 +25,9 @@ def postprocess(fluid_volume):
     baseline_heal(fluid_volume)
     if baseline_validation_check(fluid_volume):
         print(healing_successfull_msg)
+        print("─" * 50)
         return True
 
     print(healing_not_successfull_msg)
+    print("─" * 50)
     return None

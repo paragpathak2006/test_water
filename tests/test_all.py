@@ -1,4 +1,5 @@
 import unittest
+from src.Logging.log import Logger, log_tree
 from tests.helpers import files_compare, pre_cleanup_outputs
 
 from src.Fluid_region_extraction_algo.test import test_fluid_extraction_algo
@@ -31,6 +32,7 @@ class Run_Unit_Tests(unittest.TestCase):
         pre_cleanup_outputs([BASELINE_OUT_DIR, HASHING_OUT_DIR, KDTREE_OUT_DIR])
         print("Pre-cleanup done.\n\n")
 
+    @log_tree
     def test_baseline_correctness(self):
         print("\n\n C1️⃣ testing baseline convex hull difference algorithm...")
 
@@ -66,6 +68,7 @@ class Run_Unit_Tests(unittest.TestCase):
         print("✅ Performance Test is OK\n\n")
         print("────────────────────────────────────────\n\n")
 
+    @log_tree
     def test_kdtree_correctness(self):
         print("\n\n C2️⃣   Testing kdtree convex hull difference algorithm...")
 
@@ -102,6 +105,7 @@ class Run_Unit_Tests(unittest.TestCase):
         print("✅ Performance Test is OK\n\n")
         print("────────────────────────────────────────\n\n")
 
+    @log_tree
     def test_hash_intersection_correctness(self):
         print("\n\n C3️⃣  Testing hash intersection algorithm...")
 
@@ -111,6 +115,7 @@ class Run_Unit_Tests(unittest.TestCase):
         files_compare(self, BENCHMARK_INPUT_DIR, HASHING_OUT_DIR)
 
         print("✅ Correctness test is OK\n\n")
+
         print("────────────────────────────────────────\n\n")
 
     def test_hash_intersection_performance(self):
@@ -138,9 +143,13 @@ class Run_Unit_Tests(unittest.TestCase):
 
     # Final report after all tests are done
     def test_report_all(self):
+
         print(
             "\n 4️⃣ All tests completed... \n 📝 ✅✅ Final performance report ✅✅\n"
         )
+        print("─" * 50)
+
+        Logger.to_json()  # Save the log to a JSON file
         PerfLog.report()
 
 

@@ -15,13 +15,13 @@ class Variant:
 
 class Algo:
 
-    CONVEX_HULL_DIFFERENCE = "1️⃣. CHD"
+    CONVEX_HULL_DIFFERENCE = "⬜ CHD"
 
     def MESH_INTERSECTION_DIFFERENCE(i):
-        return f"2️⃣. Mesh (∩,Δ) : {i}"
+        return f"⬜ Mesh (∩,Δ) : {i}"
 
     def SPLIT(i):
-        return f"3️⃣. Split : {i}"
+        return f"⬜ Split : {i}"
 
     PROXIMITY_CONSTRUCT = "🔨 Proximity Build"
     TREE_CONSTRUCT = "🔨 KDTree Build"
@@ -59,8 +59,8 @@ class PerfLog:
     def report():
         print(" Event Times ")
         # Print header
-        row_format = "{:<40} | {:<30} "
-        print(row_format.format("Method Name ", "Time (ms)"))
+        row_format = "{:<30} | {:<30} "
+        print(row_format.format("⬜ Method Name ", "ΔT"))
         print("-" * 60)  # Separator
         for name, times in PerfLog._events.items():
             if isinstance(times, list):
@@ -76,11 +76,7 @@ class PerfLog:
                 if isinstance(name, str) and name.startswith("-----------------------"):
                     print("-" * 60)  # Separator
                 else:
-                    print(
-                        row_format.format(
-                            f" 📍 {name:40} ", f" Δt = ⏰ {times_msg(times)}"
-                        )
-                    )
+                    print(row_format.format(f" 📍 {name} ", f"⏰ {times_msg(times)}"))
 
 
 def times_msg(times):

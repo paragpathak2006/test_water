@@ -9,6 +9,7 @@ def baseline_validation_check(mesh: Trimesh):
         print(
             "✅ The mesh dose represents a valid watertight volume with consistent normals ..."
         )
+        print("─" * 50)
         print("Volume of mesh : ", mesh.volume)
 
         if abs(mesh.volume) < Tol.VOLUME:
