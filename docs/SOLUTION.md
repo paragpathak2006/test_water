@@ -68,6 +68,7 @@ Since the main performance bottleneck was found to be the mesh intersection  alg
 | 📍 Proximity query | ⏰ ~200ms | 
 | 📍 Kdtree query | ⏰~15ms | 
 | 📍 Hashmap implementation | ⏰  ~2-30ms | 
+| 📍 C++ code implementation | ⏰  ~85ms | 
 
 After extracting common faces, they were returned as lists. The uncommon faces were derived using Python’s numpy array difference function.
 
@@ -115,11 +116,11 @@ The Python unit tests module was used to ensure correctness, and performance was
 ### Correctness
 Different algorithmic approaches were also compared to a baseline approach to ensure that performance and correctness don't degrade as the product gets upgraded with newer feature additions. The baseline folder stays stable ensuing a common reference point exists for any further addition of input parts.
 
-| Algo| Proximity |KDtree | Hash Intersection |
-|:------|:-------:|:-------:|:-------:|
-|📍 CHD           | ✅|✅|✅|
-|📍 mesh (∩,Δ )  |✅|🔧|🔧|
-|📍 split  |✅|✅|✅|
+| Algo| Proximity |KDtree | Hash Intersection | C++ Code via Pybind |
+|:------|:-------:|:-------:|:-------:|:-------:|
+|📍 CHD           | ✅|✅|✅|✅|
+|📍 mesh (∩,Δ )  |✅|🔧|🔧|✅|
+|📍 split  |✅|✅|✅|✅|
 
 #### Proximity correctness
 The Proximity mesh intersection algorithm worked correctly and produced reasonably correct output by observations. 
@@ -173,6 +174,10 @@ Event Times
 | 📍 Proximity Build          |  ⏰   2.1e-3|             
 | 📍 Hash table Build : Vertices               |  ⏰  22.8|             
 | 📍 Hash table Build : Centroidal              |  ⏰  1.5 |             
+
+| C++ implementation  | Δt  |
+|:------|:-------|
+| 📍 2️⃣ Mesh (∩,Δ) : 0  Centroidal       |  ⏰  85ms|             
 
 
 ### Github workflows for CI/CD
