@@ -53,3 +53,5 @@ profiles/
 instance/
 .python-version
 trashbin/
+.Identifier
+*.Identifier
